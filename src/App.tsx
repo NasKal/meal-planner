@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { signOut } from 'firebase/auth';
 import { auth } from './firebase';
-import { BottomNav, Notice, Screen, TextButton, type TabId } from './ui/components';
+import { BottomNav, Button, Notice, Screen, TextButton, type TabId } from './ui/components';
 import { SessionProvider, useSession } from './state/session';
 import Auth from './screens/Auth';
 import Setup from './screens/Setup';
@@ -53,6 +53,9 @@ function Gate() {
           <p className="brand">Meal Planner</p>
           <h1 className="title gate-title">Δεν φορτώθηκαν τα δεδομένα</h1>
           <Notice>Έλεγξε τη σύνδεση στο ίντερνετ και δοκίμασε ξανά. Αν συνεχιστεί, αποσυνδέσου και συνδέσου πάλι.</Notice>
+          <div className="form">
+            <Button onClick={() => window.location.reload()}>Δοκίμασε ξανά</Button>
+          </div>
           <div className="gate-links">
             <TextButton onClick={() => signOut(auth)}>Αποσύνδεση</TextButton>
           </div>

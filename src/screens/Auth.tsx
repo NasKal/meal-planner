@@ -1,6 +1,7 @@
 import { useState, type FormEvent } from 'react';
 import { createUserWithEmailAndPassword, sendPasswordResetEmail, signInWithEmailAndPassword, updateProfile } from 'firebase/auth';
-import { auth } from '../firebase';
+import { doc, setDoc } from 'firebase/firestore';
+import { auth, db } from '../firebase';
 import { friendlyError } from '../lib/errors';
 import { Button, Notice, TextButton, TextField } from '../ui/components';
 
@@ -35,7 +36,9 @@ export default function Auth() {
         await signInWithEmailAndPassword(auth, email.trim(), password);
       } else if (mode === 'signup') {
         const cred = await createUserWithEmailAndPassword(auth, email.trim(), password);
-        await updateProfile(cred.user, { displayName: name.trim() });
+        const displayName = name.trim();
+        await setDoc(doc(db, 'users', cred.user.uid), { displayName }, { merge: true });
+        updateProfile(cred.user, { displayName }).catch(() => {});
       } else {
         await sendPasswordResetEmail(auth, email.trim());
         setInfo('Σου στείλαμε email για να βάλεις νέο κωδικό. Έλεγξε και τον φάκελο ανεπιθύμητων.');

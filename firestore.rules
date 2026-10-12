@@ -27,8 +27,7 @@ service cloud.firestore {
 
     // Προφίλ χρήστη: μόνο ο ίδιος.
     match /users/{uid} {
-      allow read, create, update: if signedIn() && request.auth.uid == uid;
-      allow delete: if false;
+      allow read, create, update, delete: if signedIn() && request.auth.uid == uid;
     }
 
     match /households/{hid} {
@@ -52,7 +51,8 @@ service cloud.firestore {
         && request.resource.data.diff(resource.data).affectedKeys().hasOnly(['memberIds', 'members', 'joinCode'])
         && inviteIsValid(hid, request.resource.data.joinCode);
 
-      allow delete: if false;
+      // Διαγραφή νοικοκυριού: μόνο μέλος. Η εφαρμογή δεν το εκθέτει ακόμα στη διεπαφή.
+      allow delete: if isMember(hid);
     }
 
     // Κωδικοί πρόσκλησης: διαβάζονται μόνο όταν είναι γνωστός ο κωδικός (όχι λίστα).

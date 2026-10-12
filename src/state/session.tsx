@@ -1,6 +1,6 @@
 import { createContext, useContext, useEffect, useState, type ReactNode } from 'react';
 import { onAuthStateChanged, type User } from 'firebase/auth';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot, type DocumentData, type DocumentSnapshot } from 'firebase/firestore';
 import { auth, db } from '../firebase';
 import type { Household } from '../lib/household';
 
@@ -15,11 +15,52 @@ const SessionContext = createContext<Session>({ status: 'loading' });
 
 export const useSession = () => useContext(SessionContext);
 
+type Profile = { displayName?: string; householdId?: string };
+
+/**
+ * Ακούει ένα έγγραφο. Αν ο server το απορρίψει (π.χ. αμέσως μετά από εγγραφή που δεν έχει
+ * ακόμα επιβεβαιωθεί), ξαναδοκιμάζει με αυξανόμενη καθυστέρηση πριν δηλώσει σφάλμα.
+ */
+function listen(
+  path: [string, string],
+  onData: (snap: DocumentSnapshot<DocumentData>) => void,
+  onFail: () => void,
+  maxRetries = 4,
+): () => void {
+  let cancelled = false;
+  let unsubscribe: () => void = () => {};
+  let timer: ReturnType<typeof setTimeout> | undefined;
+
+  const subscribe = (attempt: number) => {
+    unsubscribe = onSnapshot(
+      doc(db, path[0], path[1]),
+      { includeMetadataChanges: true },
+      (snap) => {
+        // Μια cache χωρίς το έγγραφο δεν είναι απάντηση: περίμενε τον server.
+        if (!snap.exists() && snap.metadata.fromCache) return;
+        onData(snap);
+      },
+      () => {
+        if (cancelled) return;
+        if (attempt >= maxRetries) onFail();
+        else timer = setTimeout(() => subscribe(attempt + 1), 600 * 2 ** attempt);
+      },
+    );
+  };
+  subscribe(0);
+
+  return () => {
+    cancelled = true;
+    unsubscribe();
+    clearTimeout(timer);
+  };
+}
+
 /** Συνδυάζει σύνδεση χρήστη, προφίλ και νοικοκυριό σε μία κατάσταση. */
 export function SessionProvider({ children }: { children: ReactNode }) {
   const [authReady, setAuthReady] = useState(false);
   const [user, setUser] = useState<User | null>(null);
-  const [profile, setProfile] = useState<{ displayName?: string; householdId?: string } | null | undefined>(undefined);
+  const [profile, setProfile] = useState<Profile | null | undefined>(undefined);
   const [household, setHousehold] = useState<Household | null | undefined>(undefined);
   const [failed, setFailed] = useState(false);
 
@@ -38,9 +79,13 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const uid = user?.uid;
   useEffect(() => {
     if (!uid) return;
-    return onSnapshot(
-      doc(db, 'users', uid),
-      (snap) => setProfile(snap.exists() ? (snap.data() as { displayName?: string; householdId?: string }) : null),
+    return listen(
+      ['users', uid],
+      (snap) => {
+        // Δικό μας εγγραφή που δεν έχει φτάσει στον server: μην προχωράς ακόμα.
+        if (snap.metadata.hasPendingWrites) return;
+        setProfile(snap.exists() ? (snap.data() as Profile) : null);
+      },
       () => setFailed(true),
     );
   }, [uid]);
@@ -48,8 +93,8 @@ export function SessionProvider({ children }: { children: ReactNode }) {
   const householdId = profile?.householdId;
   useEffect(() => {
     if (!householdId) return;
-    return onSnapshot(
-      doc(db, 'households', householdId),
+    return listen(
+      ['households', householdId],
       (snap) => setHousehold(snap.exists() ? ({ id: snap.id, ...snap.data() } as Household) : null),
       () => setFailed(true),
     );

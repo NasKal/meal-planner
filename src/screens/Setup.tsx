@@ -14,7 +14,8 @@ export default function Setup({ user, displayName }: { user: User; displayName: 
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
 
-  const name = displayName || user.displayName || user.email || '';
+  const greetingName = displayName || user.displayName || '';
+  const name = greetingName || user.email || '';
 
   async function submit(e: FormEvent) {
     e.preventDefault();
@@ -36,7 +37,7 @@ export default function Setup({ user, displayName }: { user: User; displayName: 
   return (
     <main className="screen gate">
       <p className="brand">Meal Planner</p>
-      <h1 className="title gate-title">Γεια σου{name ? `, ${name}` : ''}</h1>
+      <h1 className="title gate-title">Γεια σου{greetingName ? `, ${greetingName}` : ''}</h1>
 
       {choice === null ? (
         <>
