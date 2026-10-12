@@ -6,6 +6,8 @@
 
 Σχεδιασμός και αποφάσεις: [docs/PROJECT-BRIEF.md](docs/PROJECT-BRIEF.md)
 
+Πρόοδος και τι μένει ανοιχτό: [docs/NOTES.md](docs/NOTES.md)
+
 ## Ανάπτυξη
 
 ```
