@@ -5,7 +5,7 @@ import { fmtQty, upperEl } from '../lib/text';
 
 const CHECKED_BY_OTHER = 'τικ από το άλλο κινητό';
 
-export default function ShoppingList() {
+export default function ShoppingList({ onSettings }: { onSettings: () => void }) {
   const [store, setStore] = useState(STORES[0]);
   const [done, setDone] = useState<Set<string>>(
     () => new Set(LIST_ITEMS.filter((i) => i.doneByOther).map((i) => i.id)),
@@ -28,7 +28,7 @@ export default function ShoppingList() {
   const inCart = LIST_ITEMS.filter((i) => done.has(i.id));
 
   return (
-    <Screen>
+    <Screen onSettings={onSettings}>
       <h1 className="title">Λίστα αγορών</h1>
 
       <div className="store-tabs" role="group" aria-label="Κατάστημα">

@@ -1,4 +1,4 @@
-import type { ButtonHTMLAttributes, ReactNode } from 'react';
+import type { ButtonHTMLAttributes, InputHTMLAttributes, ReactNode } from 'react';
 import { upperEl } from '../lib/text';
 import { Icon, type IconName } from './icons';
 import './ui.css';
@@ -81,6 +81,42 @@ export function BottomNav({ current, onSelect }: { current: TabId; onSelect: (ta
   );
 }
 
-export function Screen({ children }: { children: ReactNode }) {
-  return <main className="screen">{children}</main>;
+/** Οθόνη εφαρμογής. Με `onSettings` εμφανίζει το κουμπί λογαριασμού πάνω δεξιά. */
+export function Screen({ children, onSettings }: { children: ReactNode; onSettings?: () => void }) {
+  return (
+    <main className="screen">
+      {onSettings && (
+        <button type="button" className="icon-btn" aria-label="Λογαριασμός και ρυθμίσεις" onClick={onSettings}>
+          <Icon name="person" />
+        </button>
+      )}
+      {children}
+    </main>
+  );
+}
+
+type TextFieldProps = InputHTMLAttributes<HTMLInputElement> & { label: string; hint?: string };
+
+export function TextField({ label, hint, id, ...rest }: TextFieldProps) {
+  const fieldId = id ?? `f-${label}`;
+  return (
+    <div className="field">
+      <label htmlFor={fieldId}>{label}</label>
+      <input id={fieldId} {...rest} />
+      {hint && <p className="field-hint">{hint}</p>}
+    </div>
+  );
+}
+
+export function Notice({ tone = 'error', children }: { tone?: 'error' | 'info'; children: ReactNode }) {
+  return (
+    <p className={`notice notice-${tone}`} role={tone === 'error' ? 'alert' : 'status'}>
+      {children}
+    </p>
+  );
+}
+
+/** Κουμπί που μοιάζει με σύνδεσμο, για δευτερεύουσες ενέργειες. */
+export function TextButton({ className = '', ...rest }: ButtonHTMLAttributes<HTMLButtonElement>) {
+  return <button type="button" className={`text-btn ${className}`} {...rest} />;
 }

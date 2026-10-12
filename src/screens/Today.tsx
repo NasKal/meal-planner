@@ -5,12 +5,12 @@ import { fmtQty, upperEl } from '../lib/text';
 
 const dateFormat = new Intl.DateTimeFormat('el-GR', { weekday: 'long', day: 'numeric', month: 'long' });
 
-export default function Today() {
+export default function Today({ onSettings }: { onSettings: () => void }) {
   const [open, setOpen] = useState(false);
   const dish = TODAY_DISH;
 
   return (
-    <Screen>
+    <Screen onSettings={onSettings}>
       <header className="day-head">
         <strong>{upperEl(dateFormat.format(new Date()))}</strong>
         <span>Εβδομάδα 1 από 4</span>

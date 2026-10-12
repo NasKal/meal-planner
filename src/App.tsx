@@ -1,24 +1,72 @@
 import { useState } from 'react';
-import { BottomNav, Screen, type TabId } from './ui/components';
+import { signOut } from 'firebase/auth';
+import { auth } from './firebase';
+import { BottomNav, Notice, Screen, TextButton, type TabId } from './ui/components';
+import { SessionProvider, useSession } from './state/session';
+import Auth from './screens/Auth';
+import Setup from './screens/Setup';
+import Settings from './screens/Settings';
 import Today from './screens/Today';
 import ShoppingList from './screens/ShoppingList';
 
-// Βήμα 1: δοκιμαστική εφαρμογή του συστήματος σχεδίασης με δεδομένα δείγματος.
-// Οι οθόνες Πλάνο, Βραδινά και Πιάτα έρχονται στα επόμενα βήματα.
-export default function App() {
+// Οι οθόνες Σήμερα και Λίστα δείχνουν ακόμα δεδομένα δείγματος (Βήμα 3).
+function Main() {
   const [tab, setTab] = useState<TabId>('today');
+  const [settings, setSettings] = useState(false);
 
+  if (settings) return <Settings onBack={() => setSettings(false)} />;
+
+  const open = () => setSettings(true);
   return (
     <>
-      {tab === 'today' && <Today />}
-      {tab === 'list' && <ShoppingList />}
+      {tab === 'today' && <Today onSettings={open} />}
+      {tab === 'list' && <ShoppingList onSettings={open} />}
       {tab !== 'today' && tab !== 'list' && (
-        <Screen>
+        <Screen onSettings={open}>
           <h1 className="title">Έρχεται σύντομα</h1>
           <p className="empty">Αυτή η οθόνη χτίζεται στα επόμενα βήματα.</p>
         </Screen>
       )}
       <BottomNav current={tab} onSelect={setTab} />
     </>
+  );
+}
+
+function Gate() {
+  const session = useSession();
+
+  switch (session.status) {
+    case 'loading':
+      return (
+        <main className="screen gate">
+          <p className="brand">Meal Planner</p>
+          <p className="gate-lead">Φόρτωση…</p>
+        </main>
+      );
+    case 'signedOut':
+      return <Auth />;
+    case 'needsHousehold':
+      return <Setup user={session.user} displayName={session.displayName} />;
+    case 'error':
+      return (
+        <main className="screen gate">
+          <p className="brand">Meal Planner</p>
+          <h1 className="title gate-title">Δεν φορτώθηκαν τα δεδομένα</h1>
+          <Notice>Έλεγξε τη σύνδεση στο ίντερνετ και δοκίμασε ξανά. Αν συνεχιστεί, αποσυνδέσου και συνδέσου πάλι.</Notice>
+          <div className="gate-links">
+            <TextButton onClick={() => signOut(auth)}>Αποσύνδεση</TextButton>
+          </div>
+        </main>
+      );
+    case 'ready':
+      return <Main />;
+  }
+}
+
+export default function App() {
+  return (
+    <SessionProvider>
+      <Gate />
+    </SessionProvider>
   );
 }
