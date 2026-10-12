@@ -1,0 +1,513 @@
+<!doctype html>
+<html lang="el">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#faf6ee">
+<title>Μενού 4 εβδομάδων</title>
+<style>
+:root{
+  --bg:#faf6ee;--card:#fff;--ink:#2b2a26;--mute:#7a766c;--line:#e8e1d2;
+  --olive:#5b7a3a;--olive-d:#456029;--terra:#c8553d;--sand:#f1e9d8;
+  --ok:#3f8f4f;--warn:#d98324;
+  --legume:#b5792a;--veg:#4f8a3c;--meat:#b8472f;--fish:#2f7fa6;
+}
+*{box-sizing:border-box;-webkit-tap-highlight-color:transparent}
+html,body{margin:0;background:var(--bg);color:var(--ink);font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;font-size:16px;line-height:1.4}
+body{padding-bottom:84px}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer}
+header{position:sticky;top:0;z-index:20;background:var(--bg);border-bottom:1px solid var(--line);padding:calc(10px + env(safe-area-inset-top)) 16px 10px;display:flex;align-items:center;justify-content:space-between}
+header h1{margin:0;font-size:1.15rem;letter-spacing:-.01em}
+header small{display:block;color:var(--mute);font-size:.78rem;font-weight:400}
+.gear{background:var(--sand);border:0;border-radius:12px;width:40px;height:40px;font-size:1.2rem}
+main{padding:12px 16px;max-width:720px;margin:0 auto}
+h2{font-size:1.05rem;margin:22px 0 8px}
+.hint{color:var(--mute);font-size:.88rem;margin:0 0 10px}
+.warn{background:#fdecd6;border:1px solid #f0c48a;border-radius:12px;padding:10px 12px;margin:10px 0;font-size:.9rem}
+.week{margin-bottom:8px}
+.wh{display:flex;flex-wrap:wrap;align-items:center;justify-content:space-between;gap:6px;margin-top:20px}
+.wh h2{margin:0}
+.bal{display:flex;gap:4px;flex-wrap:wrap}
+.b{font-size:.72rem;padding:2px 8px;border-radius:99px;border:1px solid}
+.b.ok{color:var(--ok);border-color:#bfe0c6;background:#eef8f0}
+.b.no{color:var(--warn);border-color:#f0c48a;background:#fff4e5}
+.trip{font-size:.8rem;color:var(--mute);margin:2px 0 8px}
+.card{background:var(--card);border:1px solid var(--line);border-left:5px solid var(--olive);border-radius:14px;padding:12px 14px;margin-bottom:10px}
+.card[data-cat=legume]{border-left-color:var(--legume)}
+.card[data-cat=veg]{border-left-color:var(--veg)}
+.card[data-cat=meat]{border-left-color:var(--meat)}
+.card[data-cat=fish]{border-left-color:var(--fish)}
+.top{display:flex;justify-content:space-between;align-items:center}
+.day{font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--mute)}
+.tag{color:#fff;font-size:.7rem;padding:2px 9px;border-radius:99px}
+.card h3{margin:4px 0 2px;font-size:1.05rem;line-height:1.25}
+.meta{font-size:.82rem;color:var(--mute)}
+.note{font-size:.82rem;margin:6px 0 0;color:#5d5a50;background:var(--sand);padding:6px 9px;border-radius:8px}
+.acts{display:flex;gap:8px;margin-top:10px}
+.acts button{border:1px solid var(--line);background:#fff;border-radius:10px;padding:8px 12px;font-size:.88rem}
+.acts button:first-child{background:var(--olive);color:#fff;border-color:var(--olive);flex:1}
+.ings{list-style:none;margin:10px 0 0;padding:8px 0 0;border-top:1px dashed var(--line)}
+.ings li{display:flex;align-items:center;gap:8px;padding:3px 0;font-size:.9rem}
+.ings li span{flex:1}
+.ings li b{font-weight:600;color:#4a473e}
+.dot{width:9px;height:9px;border-radius:50%;display:inline-block;flex:none}
+.dot.sk{background:#d33b3b}.dot.laiki{background:#4f8a3c}.dot.psaras{background:#2f7fa6}.dot.mirka{background:#d98324}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:.78rem;color:var(--mute);margin:0 0 6px}
+.legend span{display:flex;align-items:center;gap:4px}
+nav{position:fixed;bottom:0;left:0;right:0;z-index:30;background:#fff;border-top:1px solid var(--line);display:flex;padding-bottom:env(safe-area-inset-bottom)}
+nav button{flex:1;border:0;background:none;padding:9px 2px 8px;font-size:.72rem;color:var(--mute);display:flex;flex-direction:column;align-items:center;gap:2px}
+nav button i{font-style:normal;font-size:1.25rem}
+nav button.on{color:var(--olive-d);font-weight:700}
+.seg{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0}
+.seg button{border:1px solid var(--line);background:#fff;border-radius:99px;padding:7px 14px;font-size:.88rem}
+.seg button.on{background:var(--olive);color:#fff;border-color:var(--olive)}
+.seg button em{font-style:normal;font-size:.72rem;opacity:.8;margin-left:4px}
+.xrow{background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:8px;display:flex;gap:10px;align-items:center}
+.xrow .t{flex:1}
+.xrow .t b{display:block;font-weight:600;font-size:.95rem}
+.xrow .t small{color:var(--mute);font-size:.78rem}
+.step{display:flex;align-items:center;gap:8px}
+.step button{width:34px;height:34px;border-radius:50%;border:1px solid var(--line);background:var(--sand);font-size:1.1rem;line-height:1}
+.step span{min-width:18px;text-align:center;font-weight:700}
+.sec{margin:14px 0 4px;font-size:.78rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--olive-d)}
+.row{display:flex;align-items:center;gap:10px;background:#fff;border:1px solid var(--line);border-radius:10px;padding:8px 10px;margin-bottom:5px}
+.row input[type=checkbox]{width:22px;height:22px;accent-color:var(--olive);flex:none}
+.row .nm{flex:1}
+.row .q{color:var(--mute);font-size:.86rem;white-space:nowrap}
+.row.done .nm,.row.done .q{text-decoration:line-through;opacity:.5}
+.row .mini{border:1px solid var(--line);background:var(--sand);border-radius:8px;font-size:.72rem;padding:4px 8px;white-space:nowrap}
+.toolbar{display:flex;gap:8px;flex-wrap:wrap;margin:14px 0}
+.toolbar button,.btn{border:1px solid var(--line);background:#fff;border-radius:10px;padding:9px 14px;font-size:.88rem}
+.btn.pri{background:var(--olive);border-color:var(--olive);color:#fff}
+.btn.dng{color:var(--terra);border-color:#efc3ba}
+details{background:#fff;border:1px solid var(--line);border-radius:10px;margin-bottom:6px;padding:0 12px}
+details summary{padding:10px 0;cursor:pointer;display:flex;justify-content:space-between;gap:8px;list-style:none}
+details summary::-webkit-details-marker{display:none}
+details summary small{color:var(--mute);white-space:nowrap}
+details .ings{margin-top:0}
+.badge{font-size:.68rem;background:var(--sand);padding:1px 7px;border-radius:99px;margin-left:6px}
+.form{background:#fff;border:1px solid var(--line);border-radius:14px;padding:12px;margin-top:8px}
+.form label{display:block;font-size:.82rem;color:var(--mute);margin:8px 0 3px}
+.form input,.form select,.form textarea{width:100%;border:1px solid var(--line);border-radius:8px;padding:8px;background:#fff}
+.crow{display:grid;grid-template-columns:1fr 62px 74px 92px 30px;gap:4px;margin-bottom:5px}
+.crow input,.crow select{padding:6px 4px;font-size:.82rem}
+.crow button{border:0;background:none;color:var(--terra);font-size:1rem}
+.ov{position:fixed;inset:0;background:rgba(30,28,22,.45);z-index:50;display:flex;align-items:flex-end;justify-content:center}
+.ov.hidden{display:none}
+.sheet{background:var(--bg);width:100%;max-width:720px;max-height:86vh;overflow:auto;border-radius:20px 20px 0 0;padding:16px 16px calc(20px + env(safe-area-inset-bottom))}
+.sheet h3{margin:0 0 4px;font-size:1.1rem}
+.opt{display:block;width:100%;text-align:left;background:#fff;border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-bottom:7px}
+.opt.cur{border-color:var(--olive);background:#f1f6ea}
+.opt b{display:block;font-size:.95rem}
+.opt small{color:var(--mute);font-size:.78rem}
+textarea.code{width:100%;height:80px;font-size:.7rem;border:1px solid var(--line);border-radius:8px;padding:6px}
+.toast{position:fixed;left:50%;bottom:96px;transform:translateX(-50%);background:#2b2a26;color:#fff;padding:9px 16px;border-radius:99px;font-size:.88rem;z-index:80;opacity:0;pointer-events:none;transition:opacity .2s}
+.toast.show{opacity:1}
+.ver{text-align:center;color:var(--mute);font-size:.75rem;margin:24px 0}
+@media print{
+  header,nav,.toolbar,.seg,.mini,.acts,.toast{display:none!important}
+  body{padding:0;background:#fff}
+  .row{break-inside:avoid}
+}
+</style>
+</head>
+<body>
+<header>
+  <h1>Μενού 4 εβδομάδων<small>για 2 άτομα · μεσημεριανά Δευτέρα–Παρασκευή</small></h1>
+  <button class="gear" data-act="settings" aria-label="Ρυθμίσεις">⚙︎</button>
+</header>
+<main id="app"></main>
+<nav id="nav">
+  <button data-act="tab" data-tab="plan"><i>📅</i>Πλάνο</button>
+  <button data-act="tab" data-tab="extras"><i>🌙</i>Βραδινά</button>
+  <button data-act="tab" data-tab="list"><i>🛒</i>Λίστα</button>
+  <button data-act="tab" data-tab="dishes"><i>📖</i>Πιάτα</button>
+</nav>
+<div class="ov hidden" id="ov"><div class="sheet" id="sheet"></div></div>
+<div class="toast" id="toast"></div>
+
+<script>
+'use strict';
+const VERSION='0.1';
+const KEY='mealplanner-v1';
+
+/* ---------- Σταθερές ---------- */
+const CATS={legume:{n:'Όσπριο',c:'var(--legume)'},veg:{n:'Λαχανικά',c:'var(--veg)'},meat:{n:'Κρέας',c:'var(--meat)'},fish:{n:'Ψάρι',c:'var(--fish)'}};
+const STORES={sk:'Σκλαβενίτης / My Market',laiki:'Λαϊκή',psaras:'Ψαράς',mirka:'Μίρκα'};
+const SECS=[['veg','Λαχανικά & φρούτα'],['fish','Φρέσκο ψάρι'],['frozen','Κατεψυγμένα (κρέας, ψάρι)'],['dry','Ξηρά, όσπρια, ζυμαρικά'],['can','Κονσέρβες & σάλτσες'],['dairy','Γαλακτοκομικά & τυριά'],['bread','Ψωμί & πίτες'],['other','Άλλα']];
+const SLOTS=['legume','veg','meat','fish','veg'];
+const NEED={legume:1,veg:2,meat:1,fish:1};
+const DAYS=['Κυριακή','Δευτέρα','Τρίτη','Τετάρτη','Πέμπτη','Παρασκευή','Σάββατο'];
+const BASICS=['Ελαιόλαδο','Αλάτι & πιπέρι','Ρίγανη & μπαχαρικά (κύμινο, μπαχάρι)','Δάφνη','Ξίδι / βαλσάμικο','Μέλι','Αλεύρι','Πελτές ντομάτας'];
+
+/* ---------- Υλικά (συντομογραφίες) ---------- */
+const vg =(n,q,u='τμχ')=>[n,q,u,'laiki','veg'];
+const dry=(n,q,u='γρ')=>[n,q,u,'sk','dry'];
+const can=(n,q,u='κουτί')=>[n,q,u,'sk','can'];
+const frz=(n,q,u='γρ')=>[n,q,u,'sk','frozen'];
+const dai=(n,q,u='γρ',s='sk')=>[n,q,u,s,'dairy'];
+const brd=(n,q,u='τμχ')=>[n,q,u,'mirka','bread'];
+const fsh=(n,q,u='γρ')=>[n,q,u,'psaras','fish'];
+const M=(id,name,cat,t,tp,ing,o={})=>Object.assign({id,name,cat,t,tp,ing},o);
+
+/* ---------- Κατάλογος πιάτων (ποσότητες για 2 άτομα) ---------- */
+const MEALS=[
+ // ΟΣΠΡΙΑ
+ M('fakes','Φακές με φέτα και ελιές','legume',40,null,[dry('Φακές',250),vg('Κρεμμύδια',1),vg('Καρότα',1),vg('Ντομάτες',2),dai('Φέτα',120),dry('Ελιές',60)]),
+ M('fasolada','Φασολάδα','legume',100,35,[dry('Φασόλια ξερά',250),vg('Καρότα',2),vg('Κρεμμύδια',1),vg('Σέλινο (κλωναράκια)',2),can('Ντομάτα τριμμένη',1)],{batch:true,note:'Μούλιασμα από το βράδυ. Βγάζει περισσεύματα.'}),
+ M('rev-kari','Ρεβίθια κάρυ με σπανάκι','legume',30,null,[can('Ρεβίθια κονσέρβα',2),can('Γάλα καρύδας',1),dry('Πάστα ή σκόνη κάρυ',1,'βαζάκι'),vg('Σπανάκι',300,'γρ'),vg('Κρεμμύδια',1),vg('Σκόρδο',2,'σκελίδες'),brd('Πίτες',2)]),
+ M('burrito','Burrito με μαύρα φασόλια, καλαμπόκι και αβοκάντο','legume',30,null,[can('Μαύρα φασόλια',1),can('Καλαμπόκι',1),dry('Τορτίγιες',4),vg('Αβοκάντο',1),vg('Ντομάτες',2),dai('Τυρί τριμμένο',80),vg('Κρεμμύδια',1)]),
+ M('rev-fournou','Ρεβίθια λεμονάτα φούρνου με πατάτες','legume',90,40,[dry('Ρεβίθια ξερά',250),vg('Πατάτες',400,'γρ'),vg('Λεμόνια',2),vg('Κρεμμύδια',1)],{note:'Μούλιασμα από το βράδυ.'}),
+ M('gigantes','Γίγαντες φούρνου','legume',100,45,[dry('Γίγαντες',250),can('Ντομάτα τριμμένη',1),vg('Κρεμμύδια',1),vg('Πιπεριές',1),dai('Φέτα',80)],{note:'Μούλιασμα από το βράδυ.'}),
+ M('fava','Φάβα με κρεμμύδια, κάπαρη και ελιές','legume',35,null,[dry('Φάβα',250),vg('Κρεμμύδια',2),dry('Κάπαρη',1,'βαζάκι'),vg('Λεμόνια',1),vg('Ντοματίνια',150,'γρ'),dry('Ελιές',60)]),
+ // ΛΑΧΑΝΙΚΑ
+ M('mak-kolok','Μακαρόνια με κολοκυθάκια, ντοματίνια και φέτα','veg',25,null,[dry('Μακαρόνια',250),vg('Κολοκυθάκια',3),vg('Ντοματίνια',250,'γρ'),dai('Φέτα',100),vg('Σκόρδο',2,'σκελίδες')]),
+ M('gemista','Γεμιστά (ντομάτες, πιπεριές) με πλιγούρι και φέτα','veg',80,null,[vg('Ντομάτες',4),vg('Πιπεριές',3),dry('Πλιγούρι',150),vg('Κρεμμύδια',1),vg('Μαϊντανός',1,'ματσάκι'),dai('Φέτα',100),vg('Πατάτες',300,'γρ')],{batch:true,note:'Ταψί: φαγητό για 2-3 γεύματα.'}),
+ M('noodles','Noodles με λαχανικά wok και σόγια','veg',20,null,[dry('Noodles',200),vg('Καρότα',1),vg('Πιπεριές',1),vg('Μπρόκολο',200,'γρ'),vg('Κρεμμύδια',1),can('Σάλτσα σόγιας',1,'μπουκάλι'),vg('Τζίντζερ',1,'κομμάτι')]),
+ M('imam','Μελιτζάνες ιμάμ με κους κους','veg',60,null,[vg('Μελιτζάνες',3),vg('Κρεμμύδια',2),vg('Ντομάτες',3),vg('Σκόρδο',3,'σκελίδες'),dry('Κους κους',150)]),
+ M('penes','Πένες με μελιτζάνα, ντομάτα και ρίγανη','veg',30,null,[dry('Πένες',250),vg('Μελιτζάνες',2),can('Ντομάτα τριμμένη',1),dai('Μυζήθρα ή φέτα',80)]),
+ M('spanaki-avga','Σπανάκι με αυγά και φέτα, με πατάτες φούρνου','veg',45,null,[vg('Σπανάκι',600,'γρ'),dai('Αυγά',4,'τμχ','mirka'),dai('Φέτα',100),vg('Πατάτες',400,'γρ'),vg('Φρέσκα κρεμμυδάκια',1,'ματσάκι')]),
+ M('kritharoto','Κριθαρότο με αρακά και μανιτάρια','veg',30,null,[dry('Κριθαράκι',200),frz('Αρακάς κατεψυγμένος',200),vg('Μανιτάρια',250,'γρ'),vg('Κρεμμύδια',1),dai('Παρμεζάνα',40)],{mush:true,note:'Μανιτάρια: μία φορά τον μήνα.'}),
+ M('tortigies','Τορτίγιες με ψητά λαχανικά, τυρί και αβοκάντο','veg',30,null,[dry('Τορτίγιες',4),vg('Κολοκυθάκια',2),vg('Πιπεριές',2),vg('Κρεμμύδια',1),dai('Τυρί τριμμένο',100),vg('Αβοκάντο',1)]),
+ M('kouskous-veg','Κους κους με ψητά λαχανικά και φέτα','veg',25,null,[dry('Κους κους',200),vg('Κολοκυθάκια',2),vg('Μελιτζάνες',1),vg('Πιπεριές',1),vg('Ντοματίνια',150,'γρ'),dai('Φέτα',100)]),
+ M('kolokithokeftedes','Κολοκυθοκεφτέδες φούρνου με τζατζίκι','veg',45,null,[vg('Κολοκυθάκια',600,'γρ'),dai('Αυγά',1,'τμχ','mirka'),dai('Φέτα',120),vg('Μαϊντανός',1,'ματσάκι'),dry('Τριμμένη φρυγανιά',100),dai('Γιαούρτι',200,'γρ','mirka'),vg('Αγγούρια',1)]),
+ M('fasolakia','Φασολάκια λαδερά με πατάτες','veg',60,25,[vg('Φασολάκια',500,'γρ'),vg('Πατάτες',400,'γρ'),can('Ντομάτα τριμμένη',1),vg('Κρεμμύδια',1)]),
+ M('frittata','Ομελέτα φούρνου (frittata) με λαχανικά','veg',30,null,[dai('Αυγά',6,'τμχ','mirka'),vg('Κολοκυθάκια',1),vg('Πιπεριές',1),dai('Φέτα',80),vg('Κρεμμύδια',1)]),
+ // ΚΡΕΑΣ
+ M('kotopoulo-fournou','Κοτόπουλο φούρνου με πατάτες','meat',75,null,[frz('Κοτόπουλο (μπούτια ή στήθος)',800),vg('Πατάτες',700,'γρ'),vg('Λεμόνια',1)],{note:'Ο φούρνος δουλεύει μόνος του.'}),
+ M('biftekia','Μπιφτέκια με πατάτες φούρνου και σαλάτα','meat',45,null,[frz('Κιμάς μοσχαρίσιος',400),vg('Κρεμμύδια',1),vg('Πατάτες',600,'γρ'),vg('Ντομάτες',2),vg('Αγγούρια',1),dry('Τριμμένη φρυγανιά',50)]),
+ M('souvlakia','Σουβλάκια κοτόπουλο με πίτες και τζατζίκι','meat',30,null,[frz('Στήθος κοτόπουλο',400),brd('Πίτες',4),dai('Γιαούρτι',200,'γρ','mirka'),vg('Αγγούρια',1),vg('Ντομάτες',2),vg('Κρεμμύδια',1)],{note:'Τζατζίκι: γιαούρτι, αγγούρι, σκόρδο.'}),
+ M('moschari','Μοσχάρι κοκκινιστό με κοφτό μακαρονάκι','meat',120,40,[frz('Μοσχάρι σε κύβους',500),dry('Κοφτό μακαρονάκι',200),can('Ντομάτα τριμμένη',1),vg('Κρεμμύδια',1)]),
+ M('kotopoulo-pan','Κοτόπουλο στο τηγάνι με πιπεριές και πατάτες','meat',35,null,[frz('Στήθος κοτόπουλο',400),vg('Πιπεριές',2),vg('Κρεμμύδια',1),vg('Πατάτες',500,'γρ')]),
+ M('keftedakia','Κεφτεδάκια με σάλτσα ντομάτας και μακαρόνια','meat',40,null,[frz('Κιμάς μοσχαρίσιος',400),dry('Μακαρόνια',200),can('Ντομάτα τριμμένη',1),vg('Κρεμμύδια',1),vg('Μαϊντανός',1,'ματσάκι')]),
+ M('xoirino','Χοιρινό λεμονάτο με πατάτες','meat',70,null,[frz('Χοιρινό (μπριζόλες ή κύβοι)',500),vg('Πατάτες',600,'γρ'),vg('Λεμόνια',2)]),
+ M('pastitsio','Παστίτσιο','meat',120,null,[frz('Κιμάς μοσχαρίσιος',500),dry('Μακαρόνια (παστίτσιο)',400),can('Ντομάτα τριμμένη',1),dai('Γάλα μακράς διαρκείας',1,'λίτρο'),dai('Αυγά',3,'τμχ','mirka'),dai('Κεφαλοτύρι τριμμένο',100),dai('Βούτυρο',100)],{batch:true,note:'Ταψί: φαγητό για 2-3 γεύματα.'}),
+ M('mousakas','Μουσακάς','meat',130,null,[vg('Μελιτζάνες',4),vg('Πατάτες',500,'γρ'),frz('Κιμάς μοσχαρίσιος',500),can('Ντομάτα τριμμένη',1),vg('Κρεμμύδια',1),dai('Γάλα μακράς διαρκείας',1,'λίτρο'),dai('Αυγά',2,'τμχ','mirka'),dai('Κεφαλοτύρι τριμμένο',100),dai('Βούτυρο',80)],{batch:true,note:'Ταψί: φαγητό για 2-3 γεύματα.'}),
+ // ΨΑΡΙ
+ M('bakaliaros','Μπακαλιάρος πλακί με πατάτες','fish',45,null,[frz('Μπακαλιάρος φιλέτο',400),can('Ντομάτα τριμμένη',1),vg('Κρεμμύδια',1),vg('Πατάτες',400,'γρ'),vg('Μαϊντανός',1,'ματσάκι'),vg('Σκόρδο',2,'σκελίδες')]),
+ M('solomos-fournou','Σολομός φούρνου με μπρόκολο και πατάτες','fish',35,null,[frz('Σολομός φιλέτο',300),vg('Μπρόκολο',300,'γρ'),vg('Πατάτες',400,'γρ'),vg('Λεμόνια',1)]),
+ M('solomos-teriyaki','Σολομός teriyaki με noodles και λαχανικά','fish',25,null,[frz('Σολομός φιλέτο',300),dry('Noodles',150),can('Σάλτσα σόγιας',1,'μπουκάλι'),vg('Τζίντζερ',1,'κομμάτι'),vg('Καρότα',1),vg('Μπρόκολο',200,'γρ')]),
+ M('tonos','Τόνος ψητός με σαλάτα κους κους','fish',25,null,[frz('Τόνος φέτες',300),dry('Κους κους',120),vg('Ντοματίνια',150,'γρ'),vg('Αγγούρια',1),vg('Λεμόνια',1),dry('Ελιές',60)],{note:'Δοκιμή: δεν τον έχετε ξαναφάει.'}),
+ M('sardeles','Σαρδέλες στο φούρνο με λεμόνι, σαλάτα και ψωμί','fish',35,null,[fsh('Σαρδέλες φρέσκες',600),vg('Λεμόνια',1),vg('Ντομάτες',2),vg('Αγγούρια',1),brd('Ψωμί',1)],{note:'Ζητήστε από τον ψαρά να τις καθαρίσει.'}),
+ M('gavros','Γαύρος στο φούρνο με ντομάτα και κρεμμύδι','fish',40,null,[fsh('Γαύρος φρέσκος',500),vg('Ντομάτες',3),vg('Κρεμμύδια',1),vg('Μαϊντανός',1,'ματσάκι'),brd('Ψωμί',1)],{note:'Ζητήστε από τον ψαρά να τον καθαρίσει.'}),
+ M('atherina','Αθερίνα τηγανητή με σαλάτα','fish',30,null,[fsh('Αθερίνα φρέσκια',500),vg('Λεμόνια',2),vg('Ντομάτες',2),vg('Αγγούρια',1),brd('Ψωμί',1)]),
+ M('psaras-fresh','Ό,τι φρέσκο έχει ο ψαράς (όχι τσιπούρα/λαβράκι)','fish',40,null,[fsh('Ψάρι φρέσκο (ό,τι έχει)',600),vg('Πατάτες',400,'γρ'),vg('Λεμόνια',1)],{note:'Δεν ξέρετε από πριν τι θα έχει. Αν δεν έχει κάτι που σας αρέσει, αλλάξτε το πιάτο.'})
+];
+
+/* ---------- Βραδινά και πρωινό ---------- */
+const E=(id,kind,name,ing)=>({id,kind,name,ing});
+const EXTRAS=[
+ E('d1','dinner','Ομελέτα με φέτα και ντομάτα ή σπανάκι',[dai('Αυγά',4,'τμχ','mirka'),dai('Φέτα',60),vg('Ντομάτες',1)]),
+ E('d2','dinner','Τοστ ολικής με γαλοπούλα και τυρί + σαλάτα',[brd('Ψωμί τοστ ολικής',4,'φέτες'),dai('Γαλοπούλα',100),dai('Τυρί κίτρινο',80),vg('Μαρούλι',1),vg('Ντομάτες',1)]),
+ E('d3','dinner','Σαλάτα με τόνο και αυγό',[can('Τόνος κονσέρβα',2,'κονσέρβες'),dai('Αυγά',2,'τμχ','mirka'),vg('Μαρούλι',1),vg('Ντομάτες',1)]),
+ E('d4','dinner','Γιαούρτι με φρούτο, μέλι και καρύδια',[dai('Γιαούρτι',400,'γρ','mirka'),vg('Φρούτα εποχής',2),dry('Καρύδια',40)]),
+ E('d5','dinner','Ψωμί με χούμους, τυρί και ντοματίνια',[dai('Χούμους',200),brd('Ψωμί',1),dai('Φέτα',60),vg('Ντοματίνια',150,'γρ')]),
+ E('d6','dinner','Quesadilla με τυρί και λαχανικά',[dry('Τορτίγιες',2),dai('Τυρί τριμμένο',100),vg('Πιπεριές',1)]),
+ E('d7','dinner','Ρεβιθοσαλάτα με αγγούρι και φέτα',[can('Ρεβίθια κονσέρβα',1),vg('Ντοματίνια',150,'γρ'),vg('Αγγούρια',1),dai('Φέτα',60)]),
+ E('b1','bfast','Γιαούρτι με βρώμη, καρύδια και φρούτο',[dai('Γιαούρτι',200,'γρ','mirka'),dry('Βρώμη',50),dry('Καρύδια',20),vg('Φρούτα εποχής',1)]),
+ E('b2','bfast','Αυγά (3) με ψωμί',[dai('Αυγά',3,'τμχ','mirka'),brd('Ψωμί',2,'φέτες')])
+];
+
+/* ---------- Κατάσταση ---------- */
+const DEFAULT_PLAN=[
+ ['fakes','mak-kolok','kotopoulo-fournou','bakaliaros','gemista'],
+ ['rev-kari','noodles','biftekia','sardeles','imam'],
+ ['fasolada','penes','souvlakia','tonos','spanaki-avga'],
+ ['burrito','kritharoto','moschari','solomos-teriyaki','tortigies']
+];
+function defaults(){
+  return {plan:DEFAULT_PLAN.map(w=>w.slice()),
+    extras:{d1:[2,2],d2:[2,2],d3:[2,2],d4:[1,1],d5:[1,1],d6:[1,1],d7:[1,1],b1:[6,6],b2:[4,4]},
+    have:{},checked:{},custom:[],startDay:2,pressure:true,
+    tab:'plan',ls:'sk',lp:0,xp:0};
+}
+let S=defaults();
+try{const raw=localStorage.getItem(KEY); if(raw){S=Object.assign(defaults(),JSON.parse(raw));}}catch(e){}
+function save(){try{localStorage.setItem(KEY,JSON.stringify(S));}catch(e){}}
+const OPEN=new Set();
+const meal=id=>MEALS.find(m=>m.id===id)||S.custom.find(m=>m.id===id)||null;
+const allMeals=()=>MEALS.concat(S.custom);
+// διόρθωση πλάνου αν λείπει πιάτο
+S.plan.forEach((w,wi)=>w.forEach((id,i)=>{if(!meal(id))w[i]=DEFAULT_PLAN[wi][i];}));
+
+/* ---------- Βοηθητικά ---------- */
+const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+function fmtQ(q,u){
+  if(!q) return '';
+  if(u==='γρ'&&q>=1000){const k=q/1000;return (Math.round(k*10)/10).toString().replace('.',',')+' κιλά';}
+  const r=Math.round(q*10)/10;
+  return r.toString().replace('.',',')+' '+u;
+}
+function dayOrder(){
+  const base=[1,2,3,4,5]; const si=Math.max(0,base.indexOf(S.startDay));
+  return base.map((_,i)=>DAYS[base[(si+i)%5]]);
+}
+function timeText(m){return (S.pressure&&m.tp)?`⏱ ${m.tp}' με χύτρα (${m.t}' χωρίς)`:`⏱ ${m.t}'`;}
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(toast._t);toast._t=setTimeout(()=>t.classList.remove('show'),1800);}
+function ingHtml(ings){
+  return '<ul class="ings">'+ings.map(i=>`<li><span>${esc(i[0])}</span><b>${esc(fmtQ(i[1],i[2]))}</b><i class="dot ${i[3]}" title="${esc(STORES[i[3]]||'')}"></i></li>`).join('')+'</ul>';
+}
+const legend='<div class="legend"><span><i class="dot sk"></i>Σκλαβενίτης</span><span><i class="dot laiki"></i>Λαϊκή</span><span><i class="dot psaras"></i>Ψαράς</span><span><i class="dot mirka"></i>Μίρκα</span></div>';
+
+/* ---------- Πλάνο ---------- */
+function mushCount(){return S.plan.flat().filter(id=>{const m=meal(id);return m&&m.mush;}).length;}
+function card(w,i,id,day){
+  const m=meal(id); const k=w+'-'+i;
+  if(!m) return `<article class="card"><div class="day">${day}</div><h3>—</h3><div class="acts"><button data-act="swap" data-w="${w}" data-i="${i}">Διάλεξε πιάτο</button></div></article>`;
+  return `<article class="card" data-cat="${m.cat}">
+    <div class="top"><div class="day">${day}</div><span class="tag" style="background:${CATS[m.cat].c}">${CATS[m.cat].n}</span></div>
+    <h3>${esc(m.name)}</h3>
+    <div class="meta">${timeText(m)}${m.batch?' · ταψί/περισσεύματα':''}</div>
+    ${m.note?`<p class="note">${esc(m.note)}</p>`:''}
+    <div class="acts"><button data-act="swap" data-w="${w}" data-i="${i}">Άλλαξε</button><button data-act="rand" data-w="${w}" data-i="${i}" title="Τυχαίο πιάτο ίδιας κατηγορίας">🎲</button><button data-act="ing" data-w="${w}" data-i="${i}">Υλικά ${OPEN.has(k)?'▴':'▾'}</button></div>
+    ${OPEN.has(k)?ingHtml(m.ing):''}
+  </article>`;
+}
+function renderPlan(){
+  const days=dayOrder(); let h='';
+  const mc=mushCount();
+  if(mc>1) h+=`<div class="warn">Έχετε ${mc} πιάτα με μανιτάρια στον μήνα. Ο στόχος είναι ένα.</div>`;
+  h+=legend;
+  for(let w=0;w<4;w++){
+    const cnt={legume:0,veg:0,meat:0,fish:0};
+    S.plan[w].forEach(id=>{const m=meal(id);if(m)cnt[m.cat]++;});
+    h+=`<section class="week"><div class="wh"><h2>Εβδομάδα ${w+1}</h2><div class="bal">${Object.keys(NEED).map(k=>`<span class="b ${cnt[k]===NEED[k]?'ok':'no'}">${CATS[k].n} ${cnt[k]}/${NEED[k]}</span>`).join('')}</div></div>`;
+    h+=`<div class="trip">${w%2===0?'🛒 Μεγάλο ψώνι (Σκλαβενίτης) πριν ξεκινήσει η εβδομάδα · ':''}Λαϊκή την Κυριακή πριν</div>`;
+    S.plan[w].forEach((id,i)=>{h+=card(w,i,id,days[i]);});
+    h+='</section>';
+  }
+  return h;
+}
+
+/* ---------- Βραδινά & πρωινό ---------- */
+function cnt(e,p){return ((S.extras[e.id]||[0,0])[p])||0;}
+function xrow(e,p){
+  return `<div class="xrow"><div class="t"><b>${esc(e.name)}</b><small>${esc(e.ing.map(i=>i[0]).join(', '))}</small></div>
+  <div class="step"><button data-act="xdec" data-id="${e.id}" data-p="${p}">−</button><span>${cnt(e,p)}</span><button data-act="xinc" data-id="${e.id}" data-p="${p}">+</button></div></div>`;
+}
+function renderExtras(){
+  const p=S.xp;
+  const tot=k=>EXTRAS.filter(e=>e.kind===k).reduce((a,e)=>a+cnt(e,p),0);
+  let h=`<div class="seg">${[0,1].map(x=>`<button class="${p===x?'on':''}" data-act="xp" data-p="${x}">Εβδ. ${2*x+1}–${2*x+2}</button>`).join('')}</div>`;
+  h+=`<h2>Βραδινά, 10-15 λεπτά · σύνολο ${tot('dinner')}</h2><p class="hint">Πόσες φορές θα φάτε το καθένα σε αυτές τις 2 εβδομάδες (περίπου 10 καθημερινές). Τα υλικά μπαίνουν στη λίστα αυτόματα.</p>`;
+  EXTRAS.filter(e=>e.kind==='dinner').forEach(e=>h+=xrow(e,p));
+  h+=`<h2>Πρωινό (μόνο για σένα) · σύνολο ${tot('bfast')}</h2><p class="hint">Η γυναίκα σου δεν τρώει πρωινό, οπότε οι ποσότητες είναι για έναν.</p>`;
+  EXTRAS.filter(e=>e.kind==='bfast').forEach(e=>h+=xrow(e,p));
+  return h;
+}
+
+/* ---------- Λίστα αγορών ---------- */
+function buildLists(){
+  const L={sk:[{},{}],laiki:[{},{},{},{}],psaras:[{},{},{},{}],mirka:[{},{},{},{}]};
+  const add=(map,ing,mult)=>{const k=ing[0]+'|'+ing[2];if(!map[k])map[k]={n:ing[0],q:0,u:ing[2],sec:ing[4]||'other'};map[k].q+=ing[1]*mult;};
+  const put=(ing,w,mult)=>{const st=ing[3];if(st==='sk')add(L.sk[Math.floor(w/2)],ing,mult);else add(L[st][w],ing,mult);};
+  S.plan.forEach((wk,w)=>wk.forEach(id=>{const m=meal(id);if(m)m.ing.forEach(i=>put(i,w,1));}));
+  EXTRAS.forEach(e=>{[0,1].forEach(p=>{
+    const c=cnt(e,p); if(!c)return; const w1=Math.ceil(c/2),w2=c-w1;
+    e.ing.forEach(i=>{
+      if(i[3]==='sk')add(L.sk[p],i,c);
+      else{if(w1)add(L[i[3]][2*p],i,w1);if(w2)add(L[i[3]][2*p+1],i,w2);}
+    });
+  });});
+  return L;
+}
+function periods(st){return st==='sk'?['Εβδ. 1–2','Εβδ. 3–4']:['Εβδ. 1','Εβδ. 2','Εβδ. 3','Εβδ. 4'];}
+function currentItems(L){
+  const arr=(S.ls==='sk'?L.sk:L[S.ls]);
+  if(S.lp>=arr.length)S.lp=0;
+  return Object.values(arr[S.lp]);
+}
+function renderList(){
+  const L=buildLists(); const items=currentItems(L);
+  const ck=n=>`${S.ls}:${S.lp}:${n}`;
+  let h=`<div class="seg">${Object.keys(STORES).map(k=>{
+    const arr=(k==='sk'?L.sk:L[k]); const n=Object.keys(arr[k===S.ls?S.lp:0]||{}).length;
+    return `<button class="${S.ls===k?'on':''}" data-act="ls" data-s="${k}">${STORES[k].split(' / ')[0]}</button>`;}).join('')}</div>`;
+  h+=`<div class="seg">${periods(S.ls).map((p,i)=>`<button class="${S.lp===i?'on':''}" data-act="lp" data-p="${i}">${p}</button>`).join('')}</div>`;
+  const need=items.filter(i=>!S.have[i.n]);
+  const have=items.filter(i=>S.have[i.n]);
+  if(!items.length&&S.ls!=='sk') h+='<p class="hint">Δεν υπάρχει τίποτα για αυτό το κατάστημα αυτή την περίοδο.</p>';
+  SECS.forEach(([code,label])=>{
+    const g=need.filter(i=>i.sec===code).sort((a,b)=>a.n.localeCompare(b.n,'el'));
+    if(!g.length)return;
+    h+=`<div class="sec">${label}</div>`;
+    g.forEach(i=>{const done=!!S.checked[ck(i.n)];
+      h+=`<div class="row ${done?'done':''}"><input type="checkbox" data-act="chk" data-n="${esc(i.n)}" ${done?'checked':''}><span class="nm">${esc(i.n)}</span><span class="q">${esc(fmtQ(i.q,i.u))}</span><button class="mini" data-act="have" data-n="${esc(i.n)}">Το έχω</button></div>`;});
+  });
+  if(S.ls==='sk'){
+    h+=`<div class="sec">Βασικά: έλεγξε αν τελείωσαν</div>`;
+    BASICS.forEach(n=>{const done=!!S.checked[ck('b:'+n)];
+      h+=`<div class="row ${done?'done':''}"><input type="checkbox" data-act="chk" data-n="${esc('b:'+n)}" ${done?'checked':''}><span class="nm">${esc(n)}</span></div>`;});
+  }
+  if(have.length){
+    h+=`<div class="sec">Τα έχετε ήδη (${have.length})</div>`;
+    have.forEach(i=>{h+=`<div class="row done"><span class="nm">${esc(i.n)}</span><span class="q">${esc(fmtQ(i.q,i.u))}</span><button class="mini" data-act="unhave" data-n="${esc(i.n)}">Πίσω στη λίστα</button></div>`;});
+  }
+  h+=`<div class="toolbar"><button data-act="copy">Αντιγραφή λίστας</button><button data-act="print">Εκτύπωση</button><button data-act="clearchk">Καθάρισμα τικ</button></div>`;
+  h+=`<p class="hint">Οι ποσότητες είναι εκτιμήσεις για να μην ξεχάσετε κάτι. Στο μάρκετ πάρτε την πιο κοντινή συσκευασία.</p>`;
+  return h;
+}
+function listText(){
+  const items=currentItems(buildLists()).filter(i=>!S.have[i.n]);
+  let t=`${STORES[S.ls]} · ${periods(S.ls)[S.lp]}\n`;
+  SECS.forEach(([code,label])=>{
+    const g=items.filter(i=>i.sec===code).sort((a,b)=>a.n.localeCompare(b.n,'el'));
+    if(!g.length)return; t+=`\n${label}\n`;
+    g.forEach(i=>{t+=`- ${i.n}${i.q?' — '+fmtQ(i.q,i.u):''}\n`;});
+  });
+  if(S.ls==='sk'){t+='\nΒασικά (έλεγξε)\n';BASICS.forEach(n=>t+=`- ${n}\n`);}
+  return t;
+}
+function copyText(t){
+  if(navigator.clipboard&&navigator.clipboard.writeText){return navigator.clipboard.writeText(t).then(()=>true).catch(()=>fallbackCopy(t));}
+  return Promise.resolve(fallbackCopy(t));
+}
+function fallbackCopy(t){
+  try{const a=document.createElement('textarea');a.value=t;document.body.appendChild(a);a.select();const ok=document.execCommand('copy');a.remove();return ok;}catch(e){return false;}
+}
+
+/* ---------- Κατάλογος πιάτων + δικό σας πιάτο ---------- */
+const UNITS=['γρ','τμχ','κουτί','ματσάκι','σκελίδες','λίτρο','φέτες'];
+function crow(){
+  return `<div class="crow"><input class="cn" placeholder="Υλικό"><input class="cq" type="number" min="0" step="any" placeholder="Ποσ."><select class="cu">${UNITS.map(u=>`<option>${u}</option>`).join('')}</select><select class="cs">${Object.keys(STORES).map(k=>`<option value="${k}">${STORES[k].split(' / ')[0]}</option>`).join('')}</select><button type="button" data-act="rmrow">✕</button></div>`;
+}
+function renderDishes(){
+  let h=`<p class="hint">Όλα τα πιάτα του καταλόγου (ποσότητες για 2 άτομα). Δεν περιλαμβάνουν ρύζι, λάχανο, νιόκι ή τσιπούρα/λαβράκι.</p>`;
+  Object.keys(CATS).forEach(c=>{
+    h+=`<h2>${CATS[c].n}</h2>`;
+    allMeals().filter(m=>m.cat===c).forEach(m=>{
+      const used=S.plan.flat().includes(m.id);
+      h+=`<details><summary><span>${esc(m.name)}${m.id[0]==='c'&&m.id.length>5?'<span class="badge">δικό σας</span>':''}</span><small>${m.t}'</small></summary>${ingHtml(m.ing)}${m.id.startsWith('c_')?`<div class="toolbar"><button class="btn dng" data-act="delcustom" data-id="${m.id}" ${used?'disabled title="Χρησιμοποιείται στο πλάνο"':''}>Διαγραφή${used?' (σε χρήση)':''}</button></div>`:''}</details>`;
+    });
+  });
+  h+=`<h2>Προσθήκη δικού σας πιάτου</h2><div class="form">
+   <label>Όνομα</label><input id="cname" placeholder="π.χ. Γιουβαρλάκια αυγολέμονο">
+   <label>Κατηγορία</label><select id="ccat">${Object.keys(CATS).map(k=>`<option value="${k}">${CATS[k].n}</option>`).join('')}</select>
+   <label>Χρόνος (λεπτά)</label><input id="ctime" type="number" min="5" value="40">
+   <label>Υλικά για 2 άτομα</label><div id="crows">${crow()}${crow()}${crow()}</div>
+   <div class="toolbar"><button type="button" data-act="addrow">+ υλικό</button><button class="btn pri" data-act="savecustom">Αποθήκευση πιάτου</button></div></div>`;
+  return h;
+}
+
+/* ---------- Φύλλα (sheets) ---------- */
+let SW={w:0,i:0,all:false};
+function openSheet(html){document.getElementById('sheet').innerHTML=html;document.getElementById('ov').classList.remove('hidden');}
+function closeSheet(){document.getElementById('ov').classList.add('hidden');}
+function openSwap(w,i){
+  SW={w,i,all:SW.w===w&&SW.i===i?SW.all:false};
+  const cur=meal(S.plan[w][i]); const cat=cur?cur.cat:SLOTS[i];
+  const list=allMeals().filter(m=>SW.all||m.cat===cat);
+  const day=dayOrder()[i];
+  let h=`<h3>Εβδ. ${w+1} · ${day}</h3><p class="hint">${SW.all?'Όλα τα πιάτα':'Μόνο '+CATS[cat].n.toLowerCase()+', ώστε η εβδομάδα να μένει ισορροπημένη'}.</p>
+  <div class="seg"><button class="${SW.all?'':'on'}" data-act="filt" data-all="0">Ίδια κατηγορία</button><button class="${SW.all?'on':''}" data-act="filt" data-all="1">Όλα</button></div>`;
+  list.forEach(m=>{
+    h+=`<button class="opt ${m.id===S.plan[w][i]?'cur':''}" data-act="pick" data-id="${m.id}"><b>${esc(m.name)}</b><small>${CATS[m.cat].n} · ${m.t}' · ${esc(m.ing.slice(0,4).map(x=>x[0]).join(', '))}…</small></button>`;
+  });
+  openSheet(h);
+}
+function exportCode(){
+  const p={plan:S.plan,extras:S.extras,have:S.have,custom:S.custom,startDay:S.startDay,pressure:S.pressure};
+  return btoa(unescape(encodeURIComponent(JSON.stringify(p))));
+}
+function openSettings(){
+  const dayOpts=[1,2,3,4,5].map(d=>`<option value="${d}" ${S.startDay===d?'selected':''}>${DAYS[d]}</option>`).join('');
+  openSheet(`<h3>Ρυθμίσεις</h3>
+  <div class="form"><label>Η πρώτη μέρα του πλάνου</label><select data-chg="startDay">${dayOpts}</select>
+  <label><input type="checkbox" data-chg="pressure" ${S.pressure?'checked':''} style="width:auto"> Έχω χύτρα ταχύτητας (δείξε τους μικρότερους χρόνους)</label></div>
+  <h3 style="margin-top:18px">Μοιραστείτε το πλάνο</h3>
+  <p class="hint">Οι επιλογές αποθηκεύονται σε κάθε συσκευή χωριστά. Αντιγράψτε τον κωδικό και επικολλήστε τον στο κινητό της γυναίκας σου.</p>
+  <textarea class="code" id="expcode" readonly>${exportCode()}</textarea>
+  <div class="toolbar"><button class="btn" data-act="copycode">Αντιγραφή κωδικού</button></div>
+  <textarea class="code" id="impcode" placeholder="Επικολλήστε εδώ κωδικό από άλλη συσκευή"></textarea>
+  <div class="toolbar"><button class="btn pri" data-act="doimport">Εισαγωγή</button><button class="btn dng" data-act="reset">Επαναφορά όλων</button></div>
+  <div class="ver">Έκδοση ${VERSION}</div>`);
+}
+
+/* ---------- Render ---------- */
+function render(scroll){
+  const v={plan:renderPlan,extras:renderExtras,list:renderList,dishes:renderDishes}[S.tab]||renderPlan;
+  document.getElementById('app').innerHTML=v();
+  document.querySelectorAll('#nav button').forEach(b=>b.classList.toggle('on',b.dataset.tab===S.tab));
+  if(scroll)window.scrollTo(0,0);
+}
+
+/* ---------- Ενέργειες ---------- */
+function rand(w,i){
+  const cur=meal(S.plan[w][i]); const cat=cur?cur.cat:SLOTS[i];
+  const used=new Set(S.plan.flat());
+  let pool=allMeals().filter(m=>m.cat===cat&&m.id!==S.plan[w][i]&&!used.has(m.id));
+  if(mushCount()>=1||(cur&&!cur.mush&&false))pool=pool.filter(m=>!m.mush||(cur&&cur.mush));
+  if(!pool.length)pool=allMeals().filter(m=>m.cat===cat&&m.id!==S.plan[w][i]);
+  if(!pool.length)return;
+  S.plan[w][i]=pool[Math.floor(Math.random()*pool.length)].id;
+  save();render();
+}
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-act]');
+  if(!t){if(e.target.id==='ov')closeSheet();return;}
+  const d=t.dataset;
+  switch(d.act){
+    case 'tab':S.tab=d.tab;save();render(true);break;
+    case 'settings':openSettings();break;
+    case 'swap':openSwap(+d.w,+d.i);break;
+    case 'rand':rand(+d.w,+d.i);break;
+    case 'ing':{const k=d.w+'-'+d.i;OPEN.has(k)?OPEN.delete(k):OPEN.add(k);render();break;}
+    case 'filt':SW.all=d.all==='1';openSwap(SW.w,SW.i);break;
+    case 'pick':S.plan[SW.w][SW.i]=d.id;save();closeSheet();render();break;
+    case 'xp':S.xp=+d.p;save();render();break;
+    case 'xinc':case 'xdec':{
+      const a=S.extras[d.id]||[0,0];const p=+d.p;
+      a[p]=Math.max(0,Math.min(14,(a[p]||0)+(d.act==='xinc'?1:-1)));S.extras[d.id]=a;save();render();break;}
+    case 'ls':S.ls=d.s;S.lp=0;save();render();break;
+    case 'lp':S.lp=+d.p;save();render();break;
+    case 'chk':{const k=`${S.ls}:${S.lp}:${d.n}`;if(t.checked)S.checked[k]=1;else delete S.checked[k];save();render();break;}
+    case 'have':S.have[d.n]=1;save();render();break;
+    case 'unhave':delete S.have[d.n];save();render();break;
+    case 'copy':copyText(listText()).then(ok=>toast(ok?'Η λίστα αντιγράφηκε':'Δεν έγινε αντιγραφή'));break;
+    case 'print':window.print();break;
+    case 'clearchk':S.checked={};save();render();toast('Καθαρίστηκαν τα τικ');break;
+    case 'addrow':document.getElementById('crows').insertAdjacentHTML('beforeend',crow());break;
+    case 'rmrow':t.closest('.crow').remove();break;
+    case 'savecustom':saveCustom();break;
+    case 'delcustom':{if(t.disabled)break;S.custom=S.custom.filter(m=>m.id!==d.id);save();render();break;}
+    case 'copycode':copyText(document.getElementById('expcode').value).then(ok=>toast(ok?'Ο κωδικός αντιγράφηκε':'Δεν έγινε αντιγραφή'));break;
+    case 'doimport':doImport();break;
+    case 'reset':if(confirm('Να σβηστούν όλες οι επιλογές σας και να γυρίσει το αρχικό πλάνο;')){S=defaults();save();closeSheet();render(true);toast('Έγινε επαναφορά');}break;
+  }
+});
+document.addEventListener('change',e=>{
+  const t=e.target.closest('[data-chg]');if(!t)return;
+  if(t.dataset.chg==='startDay')S.startDay=+t.value;
+  if(t.dataset.chg==='pressure')S.pressure=t.checked;
+  save();render();
+});
+function saveCustom(){
+  const name=document.getElementById('cname').value.trim();
+  if(!name){toast('Γράψτε όνομα πιάτου');return;}
+  const secBy={sk:'dry',laiki:'veg',psaras:'fish',mirka:'dairy'};
+  const ing=[...document.querySelectorAll('#crows .crow')].map(r=>{
+    const n=r.querySelector('.cn').value.trim();if(!n)return null;
+    const s=r.querySelector('.cs').value;
+    return [n,parseFloat(r.querySelector('.cq').value)||0,r.querySelector('.cu').value,s,secBy[s]];
+  }).filter(Boolean);
+  if(!ing.length){toast('Προσθέστε τουλάχιστον ένα υλικό');return;}
+  S.custom.push({id:'c_'+Date.now(),name,cat:document.getElementById('ccat').value,t:parseInt(document.getElementById('ctime').value)||40,tp:null,ing});
+  save();render();toast('Το πιάτο αποθηκεύτηκε');
+}
+function doImport(){
+  const v=document.getElementById('impcode').value.trim();
+  if(!v){toast('Επικολλήστε πρώτα τον κωδικό');return;}
+  try{
+    const p=JSON.parse(decodeURIComponent(escape(atob(v))));
+    if(!Array.isArray(p.plan)||p.plan.length!==4)throw new Error('bad');
+    S=Object.assign(defaults(),p,{tab:'plan'});
+    S.plan.forEach((w,wi)=>w.forEach((id,i)=>{if(!meal(id))w[i]=DEFAULT_PLAN[wi][i];}));
+    save();closeSheet();render(true);toast('Έγινε εισαγωγή του πλάνου');
+  }catch(e){toast('Ο κωδικός δεν είναι σωστός');}
+}
+
+render();
+</script>
+</body>
+</html>
