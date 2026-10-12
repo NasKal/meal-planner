@@ -45,7 +45,7 @@ export default function Plan({ onSettings }: { onSettings: () => void }) {
     ? dishes
         .filter((d) => d.kind === 'lunch' && !d.hidden)
         .filter((d) => allCategories || !editingDish?.category || d.category === editingDish.category)
-        .sort((a, b) => a.name.localeCompare(b.name, 'el'))
+        .sort((a, b) => Number(b.favorite) - Number(a.favorite) || a.name.localeCompare(b.name, 'el'))
     : [];
 
   async function pick(dishId: string) {
@@ -166,7 +166,7 @@ export default function Plan({ onSettings }: { onSettings: () => void }) {
                 >
                   <strong>{d.name}</strong>
                   <span>
-                    {d.category ? CATEGORY_NAME[d.category] : ''} · {d.minutes}′{isCurrent ? ' · τώρα' : ''}
+                    {d.category ? CATEGORY_NAME[d.category] : ''} · {d.minutes}′{isCurrent ? ' · τώρα' : ''}{d.favorite ? ' · αγαπημένο' : ''}
                   </span>
                 </button>
               </li>

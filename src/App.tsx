@@ -1,7 +1,7 @@
 import { useState } from 'react';
 import { signOut } from 'firebase/auth';
 import { auth } from './firebase';
-import { BottomNav, Button, Notice, Screen, TextButton, type TabId } from './ui/components';
+import { BottomNav, Button, Notice, TextButton, type TabId } from './ui/components';
 import { SessionProvider, useSession } from './state/session';
 import { DataProvider, useData } from './state/data';
 import Auth from './screens/Auth';
@@ -10,16 +10,8 @@ import Settings from './screens/Settings';
 import Today from './screens/Today';
 import Plan from './screens/Plan';
 import Evening from './screens/Evening';
+import Dishes from './screens/Dishes';
 import ShoppingList from './screens/ShoppingList';
-
-function Placeholder({ onSettings }: { onSettings: () => void }) {
-  return (
-    <Screen onSettings={onSettings}>
-      <h1 className="title">Έρχεται σύντομα</h1>
-      <p className="empty">Αυτή η οθόνη χτίζεται στα επόμενα βήματα.</p>
-    </Screen>
-  );
-}
 
 function Main() {
   const [tab, setTab] = useState<TabId>('today');
@@ -45,7 +37,7 @@ function Main() {
       {tab === 'plan' && <Plan onSettings={open} />}
       {tab === 'list' && <ShoppingList onSettings={open} />}
       {tab === 'evening' && <Evening onSettings={open} />}
-      {tab === 'dishes' && <Placeholder onSettings={open} />}
+      {tab === 'dishes' && <Dishes onSettings={open} />}
       <BottomNav current={tab} onSelect={setTab} />
     </>
   );

@@ -200,6 +200,42 @@ try {
   await a.waitForFunction((n) => Number(document.querySelector('.stepper output').textContent) === n + 1, { timeout: 10000 }, before);
   expect(true, 'Α: η αύξηση φορών στα βραδινά καταγράφεται (' + before + ' → ' + (before + 1) + ')');
 
+  // Πιάτα: λίστα, αγαπημένο, νέο πιάτο, live στον Β, διαγραφή
+  await clickNav(a, 'Πιάτα');
+  await a.waitForSelector('.dish-row');
+  const dishCount = await a.$$eval('.dish-row', (els) => els.length);
+  expect(dishCount === 45, 'Α: ο κατάλογος έχει 45 πιάτα (' + dishCount + ')');
+  if (process.env.SHOTS) await a.screenshot({ path: process.env.SHOTS + '/dishes.png' });
+
+  await a.evaluate(() => document.querySelector('.dish-row').click());
+  await a.waitForSelector('.fav-btn');
+  if (process.env.SHOTS) await a.screenshot({ path: process.env.SHOTS + '/dish-detail.png' });
+  await a.evaluate(() => document.querySelector('.fav-btn').click());
+  await a.waitForFunction(() => document.querySelector('.fav-btn').getAttribute('aria-pressed') === 'true', { timeout: 10000 });
+  expect(true, 'Α: το πιάτο μπήκε στα αγαπημένα');
+  await a.click('button[aria-label="Πίσω"]');
+
+  await clickText(a, 'Νέο πιάτο');
+  await clickText(a, 'Μεσημεριανό');
+  await type(a, 'f-Όνομα', 'Δοκιμαστικό πιάτο E2E');
+  await type(a, 'f-Λεπτά', '25');
+  await clickText(a, 'Πρόσθεσε υλικό');
+  await type(a, 'ing-name-0', 'Ντομάτες');
+  await type(a, 'ing-qty-0', '3');
+  if (process.env.SHOTS) await a.screenshot({ path: process.env.SHOTS + '/editor.png', fullPage: false });
+  await clickText(a, 'Αποθήκευση');
+  await waitText(a, 'Διαγραφή πιάτου', 10000);
+  expect((await bodyText(a)).includes('Δοκιμαστικό πιάτο E2E'), 'Α: το νέο πιάτο αποθηκεύτηκε');
+
+  await clickNav(b, 'Πιάτα');
+  await waitText(b, 'Δοκιμαστικό πιάτο E2E', 15000);
+  expect(true, 'Β: βλέπει live το νέο πιάτο');
+
+  await clickText(a, 'Διαγραφή πιάτου');
+  await clickText(a, 'Ναι, διαγραφή');
+  await a.waitForFunction(() => !document.body.innerText.includes('Δοκιμαστικό πιάτο E2E') && document.querySelector('.dish-row'), { timeout: 10000 });
+  expect(true, 'Α: το πιάτο διαγράφηκε');
+
   // Ο Α βλέπει live τον Β χωρίς refresh
   await a.click('button[aria-label="Λογαριασμός και ρυθμίσεις"]');
   await waitText(a, users[1].name, 8000);

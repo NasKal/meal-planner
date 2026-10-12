@@ -904,3 +904,232 @@
   font-weight: 800;
   font-variant-numeric: tabular-nums;
 }
+
+/* ---------- Πιάτα ---------- */
+.sr-only {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  margin: -1px;
+  overflow: hidden;
+  clip: rect(0 0 0 0);
+  white-space: nowrap;
+}
+.btn-danger {
+  background: var(--cat-meat);
+  color: var(--on-cat);
+}
+.danger-outline {
+  color: var(--cat-meat-ink);
+  border-color: var(--cat-meat-ink);
+}
+.search {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0 0.9rem;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+}
+.kind-picker {
+  display: grid;
+  gap: 0.5rem;
+}
+.dish-list {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0 1rem;
+}
+.dish-row {
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 0.75rem;
+  min-height: 3.4rem;
+  padding: 0.6rem 0.9rem 0.6rem 1.1rem;
+  text-align: left;
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-left: 0.6rem solid var(--cat, var(--line));
+  border-radius: var(--radius-md);
+  cursor: pointer;
+}
+.dish-row.is-hidden {
+  border-style: dashed;
+}
+.dish-row-main {
+  display: grid;
+  gap: 0.1rem;
+  min-width: 0;
+}
+.dish-row-main strong {
+  font-weight: 800;
+  line-height: 1.2;
+}
+.dish-row-main span {
+  font-size: 0.8rem;
+  color: var(--mute);
+  font-weight: 700;
+}
+.fav-mark {
+  color: var(--cat-legume-ink);
+  flex: none;
+  display: grid;
+}
+
+.detail-title {
+  padding: 0;
+  font-size: 1.35rem;
+  line-height: 1.15;
+}
+.detail-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.4rem 0.7rem;
+  font-weight: 700;
+}
+.detail-meta .cat-tag {
+  color: var(--cat-text, var(--ink));
+}
+.kind-tag {
+  font-size: 0.8rem;
+  font-weight: 800;
+  border: 2px solid var(--line);
+  border-radius: 99px;
+  padding: 0.1rem 0.6rem;
+}
+.detail-actions {
+  display: grid;
+  gap: 0.7rem;
+}
+.fav-btn {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+  min-height: var(--tap);
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-md);
+  background: transparent;
+  color: var(--ink);
+  font-weight: 800;
+  cursor: pointer;
+}
+.fav-btn.is-on {
+  background: var(--ink);
+  color: var(--bg);
+}
+.rating {
+  display: flex;
+  align-items: center;
+  gap: 0.2rem;
+  font-weight: 700;
+}
+.rating span {
+  margin-right: auto;
+}
+.rating button {
+  width: 2.7rem;
+  height: 2.7rem;
+  display: grid;
+  place-items: center;
+  border: 0;
+  background: transparent;
+  color: var(--cat-legume-ink);
+  cursor: pointer;
+}
+.ing-section {
+  margin-top: 0.6rem;
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--mute);
+}
+.ingredients.plain {
+  margin-top: 0.2rem;
+  padding-top: 0;
+  border-top: 0;
+}
+.ingredients.plain li {
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--line);
+}
+.ingredients.plain small {
+  display: block;
+  color: var(--mute);
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+.detail-buttons {
+  display: grid;
+  gap: 0.6rem;
+  margin-top: 1.2rem;
+}
+.confirm {
+  display: grid;
+  gap: 0.5rem;
+  padding: 0.8rem;
+  border: 2px solid var(--cat-meat-ink);
+  border-radius: var(--radius-md);
+}
+.confirm p {
+  font-weight: 700;
+}
+
+/* ---------- Φόρμα πιάτου ---------- */
+.editor {
+  margin: 0.6rem 1rem 0;
+}
+.editor-title {
+  font-size: 1.1rem;
+  font-weight: 800;
+  margin-top: 0.4rem;
+}
+.field select {
+  width: 100%;
+  min-height: var(--tap);
+  padding: 0 0.7rem;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+}
+.two-cols {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 0.75rem;
+}
+.toggle {
+  display: flex;
+  align-items: center;
+  gap: 0.7rem;
+  min-height: var(--tap);
+  font-weight: 700;
+}
+.toggle input {
+  width: 1.7rem;
+  height: 1.7rem;
+  accent-color: var(--primary);
+  flex: none;
+}
+.ing-card {
+  display: grid;
+  gap: 0.7rem;
+  margin: 0;
+  padding: 0.8rem;
+  border: 2px solid var(--line);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  min-width: 0;
+}
+
+.one-col {
+  display: grid;
+  gap: 0.75rem;
+}
