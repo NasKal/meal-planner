@@ -21,7 +21,7 @@ export function CategoryTag({ category }: { category: Category }) {
   return <span className="cat-tag">{CATEGORY_NAME[category]}</span>;
 }
 
-type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { tone?: 'primary' | 'light' };
+type ButtonProps = ButtonHTMLAttributes<HTMLButtonElement> & { tone?: 'primary' | 'light' | 'outline' };
 
 export function Button({ tone = 'primary', className = '', ...rest }: ButtonProps) {
   return <button type="button" className={`btn btn-${tone} ${className}`} {...rest} />;

@@ -8,12 +8,18 @@
   --line: #e2dccb;
   --primary: #1b6234;
   --on-primary: #ffffff;
+  --primary-ink: #1b6234; /* ως κείμενο πάνω στο φόντο */
 
   --cat-legume: #8f5200;
   --cat-veg: #1b6234;
   --cat-meat: #a82a1c;
   --cat-fish: #0b5a87;
   --on-cat: #ffffff;
+  /* Χρώμα κατηγορίας ως κείμενο πάνω σε επιφάνεια (ίδιο με το μπλοκ στο φωτεινό θέμα). */
+  --cat-legume-ink: #8f5200;
+  --cat-veg-ink: #1b6234;
+  --cat-meat-ink: #a82a1c;
+  --cat-fish-ink: #0b5a87;
 
   --radius-lg: 22px;
   --radius-md: 16px;
@@ -32,10 +38,16 @@
     --mute: #bdb7a8;
     --line: #38352c;
     --primary: #247a41;
+    --primary-ink: #4cc070;
 
     --cat-legume: #a1600a;
     --cat-veg: #247a41;
     --cat-meat: #c0392b;
     --cat-fish: #1a6fa3;
+
+    --cat-legume-ink: #e0a030;
+    --cat-veg-ink: #4cc070;
+    --cat-meat-ink: #ff7a68;
+    --cat-fish-ink: #5cb8ff;
   }
 }

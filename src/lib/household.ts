@@ -7,6 +7,10 @@ export type Household = {
   name: string;
   memberIds: string[];
   members: Record<string, { displayName: string }>;
+  /** Υπάρχει μόνο αφού γεμίσει το νοικοκυριό με τον αρχικό κατάλογο. */
+  seededAt?: unknown;
+  /** Πρώτη μέρα (Δευτέρα) της εβδομάδας 1, μορφή ΕΕΕΕ-ΜΜ-ΗΗ. */
+  cycleStartDate?: string;
 };
 
 // Χωρίς I, L, O, 0, 1 για να μη μπερδεύονται όταν γράφονται με το χέρι.

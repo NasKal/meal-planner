@@ -28,6 +28,15 @@ async function clickText(page, text) {
   }, text);
   if (!ok) throw new Error('Δεν βρέθηκε κουμπί: ' + text);
 }
+async function clickNav(page, label) {
+  const ok = await page.evaluate((label) => {
+    const el = [...document.querySelectorAll('.nav-item')].find((e) => e.textContent.trim() === label);
+    if (!el) return false;
+    el.click();
+    return true;
+  }, label);
+  if (!ok) throw new Error('Δεν βρέθηκε καρτέλα: ' + label);
+}
 const bodyText = (page) => page.evaluate(() => document.body.innerText);
 const waitText = (page, text, ms = 20000) =>
   page.waitForFunction((t) => document.body.innerText.includes(t), { timeout: ms }, text);
@@ -107,10 +116,42 @@ try {
   expect(t.includes(users[0].name) && t.includes(users[1].name), 'Β: στις ρυθμίσεις φαίνονται και τα δύο ονόματα');
   expect(t.includes('ΔΟΚΙΜΗ E2E'), 'Β: φαίνεται το όνομα του νοικοκυριού');
 
+  // Αρχικός κατάλογος και πλάνο: η αρχική οθόνη έχει πιάτο, το Πλάνο έχει 20 κάρτες
+  await a.click('button[aria-label="Πίσω"]');
+  await waitText(a, 'Εβδομάδα 1 από 4');
+  const hero = await a.$eval('.hero h3', (e) => e.textContent.trim()).catch(() => '');
+  expect(hero.length > 0, 'Α: η αρχική οθόνη δείχνει πιάτο (' + hero + ')');
+  if (process.env.SHOTS) await a.screenshot({ path: process.env.SHOTS + '/today.png' });
+  await clickNav(a, 'Πλάνο');
+  await waitText(a, 'Πλάνο 4 εβδομάδων');
+  await a.waitForSelector('.plan-card');
+  const cards = await a.$$eval('.plan-card', (els) => els.length);
+  expect(cards === 20, 'Α: το πλάνο έχει 20 κάρτες (' + cards + ')');
+  if (process.env.SHOTS) await a.screenshot({ path: process.env.SHOTS + '/plan.png' });
+
+  // Αλλαγή πιάτου από τον Α, live στον Β
+  await a.evaluate(() => document.querySelector('.plan-card .btn').click());
+  await a.waitForSelector('dialog[open] .option');
+  if (process.env.SHOTS) await a.screenshot({ path: process.env.SHOTS + '/sheet.png' });
+  const chosen = await a.evaluate(() => {
+    const opt = [...document.querySelectorAll('dialog[open] .option')].find((o) => o.getAttribute('aria-current') !== 'true');
+    const name = opt.querySelector('strong').textContent.trim();
+    opt.click();
+    return name;
+  });
+  await waitText(a, chosen);
+  expect(true, 'Α: άλλαξε το πρώτο πιάτο σε «' + chosen + '»');
+
+  await b.click('button[aria-label="Πίσω"]');
+  await waitText(b, 'Εβδομάδα 1 από 4');
+  await clickNav(b, 'Πλάνο');
+  await waitText(b, chosen, 15000);
+  const bText = await bodyText(b);
+  expect(bText.includes(chosen), 'Β: βλέπει την αλλαγή του Α στο πλάνο');
+  expect(bText.includes('Αλλαγή από ' + users[0].name), 'Β: φαίνεται ποιος έκανε την αλλαγή');
+
   // Ο Α βλέπει live τον Β χωρίς refresh
-  await waitText(a, users[1].name, 8000).catch(() => {});
-  await a.click('button[aria-label="Πίσω"]').catch(() => {});
-  await a.click('button[aria-label="Λογαριασμός και ρυθμίσεις"]').catch(() => {});
+  await a.click('button[aria-label="Λογαριασμός και ρυθμίσεις"]');
   await waitText(a, users[1].name, 8000);
   expect((await bodyText(a)).includes(users[1].name), 'Α: βλέπει τον Β στο νοικοκυριό');
 
@@ -140,6 +181,19 @@ try {
     const prof = await (await fetch(DOCS + '/users/' + s.uid, { headers: headers(s) })).json();
     const hid = prof.fields && prof.fields.householdId && prof.fields.householdId.stringValue;
     if (s.label === 'A' && hid) {
+      // Οι υποσυλλογές δεν σβήνονται μαζί με το έγγραφο του νοικοκυριού: σβήνονται πρώτα.
+      for (const sub of ['dishes', 'plan', 'stores', 'extras', 'checks', 'pantry', 'manualItems', 'prices']) {
+        const list = await (await fetch(DOCS + '/households/' + hid + '/' + sub + '?pageSize=300', { headers: headers(s) })).json();
+        const names = (list.documents || []).map((d) => d.name);
+        for (let i = 0; i < names.length; i += 400) {
+          await fetch(DOCS + ':commit', {
+            method: 'POST',
+            headers: { ...headers(s), 'content-type': 'application/json' },
+            body: JSON.stringify({ writes: names.slice(i, i + 400).map((name) => ({ delete: name })) }),
+          });
+        }
+        if (names.length) say('Καθαρισμός ' + sub + ': ' + names.length + ' έγγραφα');
+      }
       const d = await fetch(DOCS + '/households/' + hid, { method: 'DELETE', headers: headers(s) });
       say('Καθαρισμός νοικοκυριού ' + hid + ': HTTP ' + d.status);
     }

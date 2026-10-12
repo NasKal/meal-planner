@@ -3,16 +3,38 @@ import { signOut } from 'firebase/auth';
 import { auth } from './firebase';
 import { BottomNav, Button, Notice, Screen, TextButton, type TabId } from './ui/components';
 import { SessionProvider, useSession } from './state/session';
+import { DataProvider, useData } from './state/data';
 import Auth from './screens/Auth';
 import Setup from './screens/Setup';
 import Settings from './screens/Settings';
 import Today from './screens/Today';
+import Plan from './screens/Plan';
 import ShoppingList from './screens/ShoppingList';
 
-// Οι οθόνες Σήμερα και Λίστα δείχνουν ακόμα δεδομένα δείγματος (Βήμα 3).
+function Placeholder({ onSettings }: { onSettings: () => void }) {
+  return (
+    <Screen onSettings={onSettings}>
+      <h1 className="title">Έρχεται σύντομα</h1>
+      <p className="empty">Αυτή η οθόνη χτίζεται στα επόμενα βήματα.</p>
+    </Screen>
+  );
+}
+
+// Η λίστα αγορών δείχνει ακόμα δεδομένα δείγματος (Βήμα 4).
 function Main() {
   const [tab, setTab] = useState<TabId>('today');
   const [settings, setSettings] = useState(false);
+  const data = useData();
+
+  if (data.status === 'seeding') {
+    return (
+      <main className="screen gate">
+        <p className="brand">Meal Planner</p>
+        <h1 className="title gate-title">Ετοιμάζουμε το νοικοκυριό σας</h1>
+        <p className="gate-lead">Φορτώνουμε τα πιάτα και το πλάνο. Θα πάρει λίγα δευτερόλεπτα.</p>
+      </main>
+    );
+  }
 
   if (settings) return <Settings onBack={() => setSettings(false)} />;
 
@@ -20,13 +42,9 @@ function Main() {
   return (
     <>
       {tab === 'today' && <Today onSettings={open} />}
+      {tab === 'plan' && <Plan onSettings={open} />}
       {tab === 'list' && <ShoppingList onSettings={open} />}
-      {tab !== 'today' && tab !== 'list' && (
-        <Screen onSettings={open}>
-          <h1 className="title">Έρχεται σύντομα</h1>
-          <p className="empty">Αυτή η οθόνη χτίζεται στα επόμενα βήματα.</p>
-        </Screen>
-      )}
+      {(tab === 'evening' || tab === 'dishes') && <Placeholder onSettings={open} />}
       <BottomNav current={tab} onSelect={setTab} />
     </>
   );
@@ -62,7 +80,11 @@ function Gate() {
         </main>
       );
     case 'ready':
-      return <Main />;
+      return (
+        <DataProvider>
+          <Main />
+        </DataProvider>
+      );
   }
 }
 

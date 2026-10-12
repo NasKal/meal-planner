@@ -1,9 +1,11 @@
 import { useState } from 'react';
+import { doc, updateDoc } from 'firebase/firestore';
 import { signOut } from 'firebase/auth';
-import { auth } from '../firebase';
+import { auth, db } from '../firebase';
+import { isMonday } from '../lib/cycle';
 import { createInvite, formatCode } from '../lib/household';
 import { friendlyError } from '../lib/errors';
-import { Button, Notice } from '../ui/components';
+import { Button, Notice, TextField } from '../ui/components';
 import { Icon } from '../ui/icons';
 import { useSession } from '../state/session';
 
@@ -15,9 +17,26 @@ export default function Settings({ onBack }: { onBack: () => void }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState('');
   const [copied, setCopied] = useState(false);
+  const [startDate, setStartDate] = useState('');
+  const [cycleMsg, setCycleMsg] = useState<{ tone: 'error' | 'info'; text: string } | null>(null);
 
   if (session.status !== 'ready') return null;
   const { user, household, displayName } = session;
+  const currentStart = household.cycleStartDate ?? '';
+
+  async function saveStart() {
+    const value = startDate || currentStart;
+    if (!isMonday(value)) {
+      setCycleMsg({ tone: 'error', text: 'Η εβδομάδα 1 ξεκινά πάντα Δευτέρα. Διάλεξε μια Δευτέρα.' });
+      return;
+    }
+    try {
+      await updateDoc(doc(db, 'households', household.id), { cycleStartDate: value });
+      setCycleMsg({ tone: 'info', text: 'Αποθηκεύτηκε.' });
+    } catch (err) {
+      setCycleMsg({ tone: 'error', text: friendlyError(err) });
+    }
+  }
   const members = household.memberIds.map((id) => household.members?.[id]?.displayName || 'Μέλος');
 
   async function makeInvite() {
@@ -62,6 +81,24 @@ export default function Settings({ onBack }: { onBack: () => void }) {
         <h2 className="panel-title">Νοικοκυριό</h2>
         <p className="panel-main">{household.name}</p>
         <p className="panel-sub">{members.join(' · ')}</p>
+      </section>
+
+      <section className="panel">
+        <h2 className="panel-title">Κύκλος 4 εβδομάδων</h2>
+        <p className="panel-sub">
+          Η μέρα που ξεκινά η εβδομάδα 1. Αν αλλάξει, το πλάνο μένει ίδιο και μετακινείται μόνο το ημερολόγιο.
+        </p>
+        <TextField
+          label="Η εβδομάδα 1 ξεκινά τη Δευτέρα"
+          type="date"
+          value={startDate || currentStart}
+          onChange={(e) => {
+            setStartDate(e.target.value);
+            setCycleMsg(null);
+          }}
+        />
+        {cycleMsg && <Notice tone={cycleMsg.tone}>{cycleMsg.text}</Notice>}
+        <Button onClick={saveStart}>Αποθήκευση</Button>
       </section>
 
       <section className="panel">

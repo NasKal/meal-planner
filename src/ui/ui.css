@@ -39,10 +39,22 @@
 }
 
 /* ---------- Μπλοκ σημερινού πιάτου ---------- */
-[data-cat='legume'] { --cat: var(--cat-legume); }
-[data-cat='veg'] { --cat: var(--cat-veg); }
-[data-cat='meat'] { --cat: var(--cat-meat); }
-[data-cat='fish'] { --cat: var(--cat-fish); }
+[data-cat='legume'] {
+  --cat: var(--cat-legume);
+  --cat-text: var(--cat-legume-ink);
+}
+[data-cat='veg'] {
+  --cat: var(--cat-veg);
+  --cat-text: var(--cat-veg-ink);
+}
+[data-cat='meat'] {
+  --cat: var(--cat-meat);
+  --cat-text: var(--cat-meat-ink);
+}
+[data-cat='fish'] {
+  --cat: var(--cat-fish);
+  --cat-text: var(--cat-fish-ink);
+}
 
 .hero {
   margin: 0.6rem 1rem;
@@ -358,7 +370,7 @@
   font-size: 0.85rem;
   font-weight: 800;
   letter-spacing: 0.08em;
-  color: var(--primary);
+  color: var(--primary-ink);
 }
 .gate-title {
   padding: 0.3rem 0 1rem;
@@ -414,7 +426,7 @@
   padding: 0;
   border: 0;
   background: none;
-  color: var(--primary);
+  color: var(--primary-ink);
   font-weight: 800;
   text-decoration: underline;
   text-underline-offset: 0.2em;
@@ -428,10 +440,10 @@
   font-weight: 700;
 }
 .notice-error {
-  color: var(--cat-meat);
+  color: var(--cat-meat-ink);
 }
 .notice-info {
-  color: var(--primary);
+  color: var(--primary-ink);
 }
 
 .choices {
@@ -504,4 +516,196 @@
 }
 .settings-foot {
   margin: 1.5rem 1rem 0;
+}
+
+/* ---------- Πλάνο ---------- */
+.btn-outline {
+  background: transparent;
+  color: var(--ink);
+  border: 2px solid var(--ink);
+}
+.stack {
+  margin: 0.6rem 1rem 0;
+}
+.hero-lead {
+  font-size: 0.8rem;
+  font-weight: 800;
+  letter-spacing: 0.08em;
+  margin-bottom: 0.4rem;
+}
+.hero-lead:empty {
+  display: none;
+}
+.hero-by {
+  margin-top: 0.8rem;
+  font-size: 0.8rem;
+  font-weight: 700;
+}
+
+.plan-week {
+  scroll-margin-top: 0.5rem;
+}
+.plan-week-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  gap: 0.5rem;
+  margin: 1.6rem 1rem 0.4rem;
+}
+.plan-week-head h2 {
+  font-size: 1.25rem;
+  font-weight: 800;
+}
+.plan-week-head span {
+  color: var(--mute);
+  font-weight: 700;
+}
+.balance {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.35rem;
+  margin: 0 1rem 0.6rem;
+}
+.balance li {
+  font-size: 0.8rem;
+  font-weight: 800;
+  padding: 0.15rem 0.6rem;
+  border-radius: 99px;
+  border: 2px solid currentColor;
+}
+.balance .ok {
+  color: var(--primary-ink);
+}
+.balance .warn {
+  color: var(--cat-legume-ink);
+}
+
+.plan-card {
+  margin: 0.5rem 1rem;
+  padding: 0.7rem 0.9rem 0.8rem 1.1rem;
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-left: 0.6rem solid var(--cat, var(--line));
+  border-radius: var(--radius-md);
+  display: grid;
+  gap: 0.35rem;
+}
+.plan-card.is-today {
+  border-color: var(--ink);
+  border-left-color: var(--cat, var(--ink));
+}
+.plan-top {
+  display: flex;
+  align-items: center;
+  gap: 0.6rem;
+}
+.plan-top .day {
+  font-size: 0.8rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  color: var(--mute);
+}
+.plan-top .time {
+  margin-left: auto;
+  font-weight: 800;
+}
+.today-mark {
+  font-size: 0.8rem;
+  font-weight: 800;
+  background: var(--ink);
+  color: var(--bg);
+  padding: 0.05rem 0.55rem;
+  border-radius: 99px;
+}
+.plan-card h3 {
+  font-size: 1.1rem;
+  font-weight: 800;
+  line-height: 1.2;
+}
+.plan-meta {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 0.3rem 0.6rem;
+  font-size: 0.8rem;
+  color: var(--mute);
+  font-weight: 700;
+}
+.plan-meta .cat-tag {
+  color: var(--cat-text, var(--ink));
+}
+.plan-card .btn {
+  min-height: 2.8rem;
+  margin-top: 0.2rem;
+}
+
+/* ---------- Φύλλο επιλογής ---------- */
+.sheet {
+  width: min(100%, 30rem);
+  max-width: 30rem;
+  max-height: 86dvh;
+  margin: auto auto 0;
+  padding: 0;
+  border: 0;
+  border-radius: var(--radius-lg) var(--radius-lg) 0 0;
+  background: var(--bg);
+  color: var(--ink);
+}
+.sheet::backdrop {
+  background: rgba(0, 0, 0, 0.55);
+}
+.sheet-body {
+  padding: 1rem 0 calc(1rem + env(safe-area-inset-bottom));
+  max-height: 86dvh;
+  overflow-y: auto;
+}
+.sheet-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 1rem;
+  padding: 0 1rem;
+}
+.sheet-head h2 {
+  font-size: 1.15rem;
+  font-weight: 800;
+}
+.sheet-actions {
+  display: grid;
+  gap: 0.4rem;
+  padding: 0.6rem 1rem 0;
+}
+.sheet-actions .store-tabs {
+  padding: 0.2rem 0 0;
+}
+.options {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0.6rem 1rem 0;
+}
+.option {
+  width: 100%;
+  display: grid;
+  gap: 0.1rem;
+  text-align: left;
+  padding: 0.6rem 0.9rem 0.6rem 1.1rem;
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-left: 0.6rem solid var(--cat, var(--line));
+  border-radius: var(--radius-md);
+  cursor: pointer;
+  min-height: 3.4rem;
+}
+.option[aria-current='true'] {
+  border-color: var(--ink);
+  border-left-color: var(--cat, var(--ink));
+}
+.option strong {
+  font-weight: 800;
+  line-height: 1.2;
+}
+.option span {
+  font-size: 0.8rem;
+  color: var(--mute);
+  font-weight: 700;
 }
