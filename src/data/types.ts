@@ -63,3 +63,31 @@ export const SECTIONS: [string, string][] = [
 export const WEEK_BALANCE: Record<Category, number> = { legume: 1, veg: 2, meat: 1, fish: 1 };
 
 export const WEEKDAYS = ['Δευτέρα', 'Τρίτη', 'Τετάρτη', 'Πέμπτη', 'Παρασκευή'];
+
+/** Κατάσταση ενός στοιχείου της λίστας για μια περίοδο: αγοράστηκε ή υπάρχει ήδη στο σπίτι. */
+export type CheckState = {
+  state: 'bought' | 'have';
+  by: string | null;
+};
+
+export type ManualItem = {
+  id: string;
+  name: string;
+  storeId: string;
+  /** Έναρξη της περιόδου (ΕΕΕΕ-ΜΜ-ΗΗ), ώστε να ανήκει σε συγκεκριμένη λίστα. */
+  periodStart: string;
+  done: boolean;
+  by: string | null;
+};
+
+/** Βασικά είδη που ελέγχονται κάθε φορά, στην πρώτη λίστα καταστήματος. */
+export const BASICS = [
+  'Ελαιόλαδο',
+  'Αλάτι & πιπέρι',
+  'Ρίγανη & μπαχαρικά (κύμινο, μπαχάρι)',
+  'Δάφνη',
+  'Ξίδι / βαλσάμικο',
+  'Μέλι',
+  'Αλεύρι',
+  'Πελτές ντομάτας',
+];

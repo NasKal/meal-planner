@@ -130,35 +130,77 @@
   margin: 0 1rem;
 }
 .upcoming li {
-  display: grid;
-  grid-template-columns: 0.6rem minmax(0, 1fr) auto;
-  gap: 0.75rem;
-  align-items: center;
   background: var(--surface);
   border: 2px solid var(--line);
+  border-left: 0.6rem solid var(--cat, var(--line));
   border-radius: var(--radius-md);
-  padding: 0.6rem 0.9rem 0.6rem 0;
   overflow: hidden;
 }
-.upcoming li::before {
-  content: '';
-  align-self: stretch;
-  background: var(--cat);
+.upcoming-btn {
+  width: 100%;
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: start;
+  padding: 0.65rem 0.9rem;
+  border: 0;
+  background: transparent;
+  text-align: left;
+  cursor: pointer;
+  min-height: 3.4rem;
+}
+.upcoming-text {
+  display: grid;
+  gap: 0.1rem;
 }
 .upcoming .day {
-  display: block;
   font-size: 0.8rem;
   font-weight: 700;
   letter-spacing: 0.06em;
   color: var(--mute);
 }
 .upcoming .dish {
-  display: block;
   font-weight: 700;
   line-height: 1.25;
 }
+.upcoming-note {
+  font-size: 0.8rem;
+  color: var(--mute);
+  font-weight: 700;
+}
+.upcoming-more {
+  font-size: 0.8rem;
+  font-weight: 800;
+  color: var(--primary-ink);
+  text-decoration: underline;
+  text-underline-offset: 0.2em;
+  margin-top: 0.15rem;
+}
 .upcoming .time {
   font-weight: 800;
+}
+.upcoming-ings {
+  padding: 0 0.9rem 0.8rem;
+}
+.upcoming-ings .ingredients {
+  margin-top: 0;
+  border-top: 2px solid var(--line);
+  padding-top: 0.6rem;
+}
+
+.reminder {
+  display: grid;
+  gap: 0.15rem;
+  margin: 0.6rem 1rem 0;
+  padding: 0.7rem 0.9rem;
+  border: 2px solid var(--cat-legume-ink);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+}
+.reminder strong {
+  font-size: 0.8rem;
+  letter-spacing: 0.08em;
+  color: var(--cat-legume-ink);
 }
 
 .note-card {
@@ -708,4 +750,157 @@
   font-size: 0.8rem;
   color: var(--mute);
   font-weight: 700;
+}
+
+/* ---------- Λίστα αγορών: ενέργειες γραμμής, προσθήκη, ολοκληρωμένα ---------- */
+.period-tabs {
+  padding-top: 0;
+}
+.period-tabs .store-tab {
+  min-height: 2.4rem;
+  font-size: 0.9rem;
+}
+.check-text {
+  display: grid;
+  gap: 0.15rem;
+  min-width: 0;
+}
+.check-actions {
+  display: flex;
+  gap: 0.5rem;
+  margin-top: 0.2rem;
+}
+.mini-btn {
+  min-height: 2.4rem;
+  padding: 0 0.8rem;
+  border: 2px solid var(--line);
+  border-radius: 99px;
+  background: transparent;
+  color: var(--ink);
+  font-size: 0.8rem;
+  font-weight: 800;
+  cursor: pointer;
+}
+.have-row {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 0.75rem;
+  margin: 0.2rem 1rem;
+  padding: 0.3rem 0;
+  border-bottom: 1px solid var(--line);
+  color: var(--mute);
+}
+.add-item {
+  margin: 1.4rem 1rem 0;
+}
+.add-item label {
+  display: block;
+  font-weight: 700;
+  margin-bottom: 0.3rem;
+}
+.add-item-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.5rem;
+}
+.add-item-row input {
+  min-height: var(--tap);
+  padding: 0 0.9rem;
+  border: 2px solid var(--ink);
+  border-radius: var(--radius-md);
+  background: var(--surface);
+  color: var(--ink);
+  font: inherit;
+  font-weight: 600;
+  min-width: 0;
+}
+.add-item-row .btn {
+  width: auto;
+  padding: 0 1.1rem;
+}
+.list-foot {
+  display: grid;
+  gap: 0.8rem;
+  margin-top: 1.4rem;
+}
+.hint {
+  margin: 0.4rem 1rem;
+  color: var(--mute);
+  font-size: 0.9rem;
+}
+.list-foot .hint {
+  margin: 0;
+}
+
+/* ---------- Βραδινά ---------- */
+.extras-head {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin: 1.4rem 1rem 0.4rem;
+}
+.extras-head h2 {
+  font-size: 1.1rem;
+  font-weight: 800;
+}
+.extras-head span {
+  color: var(--mute);
+  font-weight: 700;
+}
+.extras {
+  display: grid;
+  gap: 0.5rem;
+  margin: 0 1rem;
+}
+.extra-row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto;
+  gap: 0.75rem;
+  align-items: center;
+  padding: 0.6rem 0.8rem;
+  background: var(--surface);
+  border: 2px solid var(--line);
+  border-radius: var(--radius-md);
+}
+.extra-text {
+  display: grid;
+  gap: 0.1rem;
+}
+.extra-text strong {
+  font-weight: 800;
+  line-height: 1.2;
+}
+.extra-text span {
+  font-size: 0.8rem;
+  color: var(--mute);
+  font-weight: 700;
+}
+.stepper {
+  display: flex;
+  align-items: center;
+  gap: 0.4rem;
+}
+.stepper button {
+  width: var(--tap);
+  height: var(--tap);
+  border-radius: 50%;
+  border: 2px solid var(--ink);
+  background: transparent;
+  color: var(--ink);
+  font-size: 1.4rem;
+  font-weight: 800;
+  line-height: 1;
+  cursor: pointer;
+}
+.stepper button:disabled {
+  opacity: 0.35;
+  cursor: default;
+}
+.stepper output {
+  min-width: 1.6rem;
+  text-align: center;
+  font-size: 1.15rem;
+  font-weight: 800;
+  font-variant-numeric: tabular-nums;
 }

@@ -9,6 +9,7 @@ import Setup from './screens/Setup';
 import Settings from './screens/Settings';
 import Today from './screens/Today';
 import Plan from './screens/Plan';
+import Evening from './screens/Evening';
 import ShoppingList from './screens/ShoppingList';
 
 function Placeholder({ onSettings }: { onSettings: () => void }) {
@@ -20,7 +21,6 @@ function Placeholder({ onSettings }: { onSettings: () => void }) {
   );
 }
 
-// Η λίστα αγορών δείχνει ακόμα δεδομένα δείγματος (Βήμα 4).
 function Main() {
   const [tab, setTab] = useState<TabId>('today');
   const [settings, setSettings] = useState(false);
@@ -44,7 +44,8 @@ function Main() {
       {tab === 'today' && <Today onSettings={open} />}
       {tab === 'plan' && <Plan onSettings={open} />}
       {tab === 'list' && <ShoppingList onSettings={open} />}
-      {(tab === 'evening' || tab === 'dishes') && <Placeholder onSettings={open} />}
+      {tab === 'evening' && <Evening onSettings={open} />}
+      {tab === 'dishes' && <Placeholder onSettings={open} />}
       <BottomNav current={tab} onSelect={setTab} />
     </>
   );

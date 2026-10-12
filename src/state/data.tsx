@@ -1,7 +1,7 @@
 import { createContext, useContext, useEffect, useRef, useState, type ReactNode } from 'react';
 import { collection, onSnapshot, type QuerySnapshot, type DocumentData } from 'firebase/firestore';
 import { db } from '../firebase';
-import type { Dish, PlanSlot, Store } from '../data/types';
+import type { CheckState, Dish, ManualItem, PlanSlot, Store } from '../data/types';
 import { seedHousehold } from '../lib/seed';
 import { useSession } from './session';
 
@@ -11,6 +11,11 @@ export type HouseholdData = {
   stores: Store[];
   /** Κλειδί "εβδομάδα-θέση", π.χ. "0-2" = εβδομάδα 1, Τετάρτη. */
   plan: Map<string, PlanSlot>;
+  /** Φορές ανά περίοδο 2 εβδομάδων για βραδινά και πρωινό. Κλειδί "dishId_period". */
+  extras: Map<string, number>;
+  /** Τικ της λίστας αγορών. Κλειδί: id εγγράφου (βλ. lib/shopping.checkId). */
+  checks: Map<string, CheckState>;
+  manualItems: ManualItem[];
   cycleStartDate: string;
 };
 
@@ -19,8 +24,16 @@ type DataState = { status: 'loading' } | { status: 'seeding' } | { status: 'fail
 const DataContext = createContext<DataState>({ status: 'loading' });
 export const useData = () => useContext(DataContext);
 
-/** Ακούει μια υποσυλλογή. Μια κενή cache δεν μετράει ως απάντηση: περιμένει τον server. */
-function useCollection(householdId: string | undefined, name: string, onData: (snap: QuerySnapshot<DocumentData>) => void) {
+/**
+ * Ακούει μια υποσυλλογή. Μια κενή cache δεν μετράει ως απάντηση: περιμένει τον server,
+ * εκτός αν η συλλογή μπορεί νόμιμα να είναι άδεια (`mayBeEmpty`), ώστε να ανοίγει και offline.
+ */
+function useCollection(
+  householdId: string | undefined,
+  name: string,
+  onData: (snap: QuerySnapshot<DocumentData>) => void,
+  mayBeEmpty = false,
+) {
   const handler = useRef(onData);
   handler.current = onData;
 
@@ -30,14 +43,14 @@ function useCollection(householdId: string | undefined, name: string, onData: (s
       collection(db, 'households', householdId, name),
       { includeMetadataChanges: true },
       (snap) => {
-        if (snap.empty && snap.metadata.fromCache) return;
+        if (!mayBeEmpty && snap.empty && snap.metadata.fromCache) return;
         handler.current(snap);
       },
       () => {
         /* οι αποτυχίες χειρίζονται από το session */
       },
     );
-  }, [householdId, name]);
+  }, [householdId, name, mayBeEmpty]);
 }
 
 export function DataProvider({ children }: { children: ReactNode }) {
@@ -49,6 +62,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
   const [dishes, setDishes] = useState<Dish[] | null>(null);
   const [stores, setStores] = useState<Store[] | null>(null);
   const [plan, setPlan] = useState<Map<string, PlanSlot> | null>(null);
+  const [extras, setExtras] = useState<Map<string, number> | null>(null);
+  const [checks, setChecks] = useState<Map<string, CheckState> | null>(null);
+  const [manualItems, setManualItems] = useState<ManualItem[] | null>(null);
   const [seedFailed, setSeedFailed] = useState(false);
   const seeding = useRef(false);
 
@@ -70,12 +86,27 @@ export function DataProvider({ children }: { children: ReactNode }) {
   useCollection(householdId, 'plan', (snap) =>
     setPlan(new Map(snap.docs.map((d) => [d.id, d.data() as PlanSlot]))),
   );
+  useCollection(householdId, 'extras', (snap) =>
+    setExtras(new Map(snap.docs.map((d) => [d.id, (d.data().count as number) ?? 0]))),
+  );
+  useCollection(
+    householdId,
+    'checks',
+    (snap) => setChecks(new Map(snap.docs.map((d) => [d.id, d.data() as CheckState]))),
+    true,
+  );
+  useCollection(
+    householdId,
+    'manualItems',
+    (snap) => setManualItems(snap.docs.map((d) => ({ ...(d.data() as Omit<ManualItem, 'id'>), id: d.id }))),
+    true,
+  );
 
   let state: DataState;
   if (!household) state = { status: 'loading' };
   else if (seedFailed) state = { status: 'failed' };
   else if (needsSeed) state = { status: 'seeding' };
-  else if (!dishes || !stores || !plan) state = { status: 'loading' };
+  else if (!dishes || !stores || !plan || !extras || !checks || !manualItems) state = { status: 'loading' };
   else {
     state = {
       status: 'ready',
@@ -84,6 +115,9 @@ export function DataProvider({ children }: { children: ReactNode }) {
         dishById: new Map(dishes.map((d) => [d.id, d])),
         stores,
         plan,
+        extras,
+        checks,
+        manualItems,
         cycleStartDate: household.cycleStartDate ?? '',
       },
     };

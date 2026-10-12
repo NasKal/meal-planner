@@ -150,6 +150,56 @@ try {
   expect(bText.includes(chosen), 'Β: βλέπει την αλλαγή του Α στο πλάνο');
   expect(bText.includes('Αλλαγή από ' + users[0].name), 'Β: φαίνεται ποιος έκανε την αλλαγή');
 
+  // Σήμερα: οι επόμενες μέρες ανοίγουν με υλικά
+  await clickNav(a, 'Σήμερα');
+  await a.waitForSelector('.upcoming-btn');
+  await a.evaluate(() => document.querySelector('.upcoming-btn').click());
+  await a.waitForSelector('.upcoming-ings li');
+  expect(true, 'Α: οι επόμενες μέρες δείχνουν υλικά');
+
+  // Λίστα αγορών από το πλάνο
+  await clickNav(a, 'Λίστα');
+  await a.waitForSelector('.check-row');
+  const listRows = await a.$$eval('.check-row', (els) => els.length);
+  expect(listRows > 5, 'Α: η λίστα έχει στοιχεία (' + listRows + ')');
+  if (process.env.SHOTS) await a.screenshot({ path: process.env.SHOTS + '/list.png' });
+
+  // Τικ από τον Α, live στον Β
+  const ticked = await a.evaluate(() => {
+    const row = document.querySelector('.check-row:not(.is-done)');
+    const name = row.querySelector('.check-name').textContent.trim();
+    row.querySelector('input').click();
+    return name;
+  });
+  await clickNav(b, 'Λίστα');
+  await waitText(b, 'τικ από ' + users[0].name, 15000);
+  expect(true, 'Β: βλέπει live το τικ του Α για «' + ticked + '»');
+
+  // "Το έχω": το είδος μπαίνει στα «Τα έχετε ήδη»
+  await a.evaluate(() => {
+    const btn = [...document.querySelectorAll('.mini-btn')].find((e) => e.textContent.trim() === 'Το έχω');
+    btn.click();
+  });
+  await waitText(a, 'ΤΑ ΕΧΕΤΕ ΗΔΗ', 10000);
+  expect(true, 'Α: το «Το έχω» μεταφέρει το είδος στα ήδη υπάρχοντα');
+
+  // Έκτακτο προϊόν
+  await type(a, 'new-item', 'Χαρτί κουζίνας');
+  await clickText(a, 'Πρόσθεσε');
+  await waitText(a, 'Χαρτί κουζίνας', 10000);
+  await waitText(b, 'Χαρτί κουζίνας', 15000);
+  expect(true, 'Α και Β βλέπουν το έκτακτο προϊόν');
+
+  // Βραδινά: αύξηση φορών
+  await clickNav(a, 'Βραδινά');
+  await a.waitForSelector('.stepper output');
+  const before = await a.$eval('.stepper output', (e) => Number(e.textContent));
+  await a.evaluate(() => {
+    document.querySelector('.stepper button[aria-label^="Περισσότερο"]').click();
+  });
+  await a.waitForFunction((n) => Number(document.querySelector('.stepper output').textContent) === n + 1, { timeout: 10000 }, before);
+  expect(true, 'Α: η αύξηση φορών στα βραδινά καταγράφεται (' + before + ' → ' + (before + 1) + ')');
+
   // Ο Α βλέπει live τον Β χωρίς refresh
   await a.click('button[aria-label="Λογαριασμός και ρυθμίσεις"]');
   await waitText(a, users[1].name, 8000);
