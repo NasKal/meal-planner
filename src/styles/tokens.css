@@ -1,0 +1,41 @@
+/* Σύστημα σχεδίασης «Λαϊκή». Το σκούρο θέμα ακολουθεί το iPhone. Ελάχιστες αντιθέσεις
+   (WCAG): κείμενο 16:1, βοηθητικό 7,7:1 (φωτεινό) / 9,3:1 (σκούρο), λευκό σε μπλοκ κατηγορίας ≥ 5:1. */
+:root {
+  --bg: #fffdf7;
+  --surface: #ffffff;
+  --ink: #1b1a17;
+  --mute: #55524a;
+  --line: #e2dccb;
+  --primary: #1b6234;
+  --on-primary: #ffffff;
+
+  --cat-legume: #8f5200;
+  --cat-veg: #1b6234;
+  --cat-meat: #a82a1c;
+  --cat-fish: #0b5a87;
+  --on-cat: #ffffff;
+
+  --radius-lg: 22px;
+  --radius-md: 16px;
+  --radius-sm: 10px;
+  --tap: 3.2rem;
+
+  --font: 'Commissioner', ui-sans-serif, system-ui, sans-serif;
+  color-scheme: light dark;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #14130f;
+    --surface: #201e19;
+    --ink: #f6f2e8;
+    --mute: #bdb7a8;
+    --line: #38352c;
+    --primary: #247a41;
+
+    --cat-legume: #a1600a;
+    --cat-veg: #247a41;
+    --cat-meat: #c0392b;
+    --cat-fish: #1a6fa3;
+  }
+}

@@ -1,30 +1,24 @@
-import { useEffect, useState } from 'react';
-import { onAuthStateChanged, type User } from 'firebase/auth';
-import { app, auth } from './firebase';
+import { useState } from 'react';
+import { BottomNav, Screen, type TabId } from './ui/components';
+import Today from './screens/Today';
+import ShoppingList from './screens/ShoppingList';
 
-// Προσωρινή σελίδα ελέγχου του Βήματος 0: επιβεβαιώνει ότι το deploy και η
-// σύνδεση με το Firebase δουλεύουν. Αντικαθίσταται στα επόμενα βήματα.
+// Βήμα 1: δοκιμαστική εφαρμογή του συστήματος σχεδίασης με δεδομένα δείγματος.
+// Οι οθόνες Πλάνο, Βραδινά και Πιάτα έρχονται στα επόμενα βήματα.
 export default function App() {
-  const [user, setUser] = useState<User | null | undefined>(undefined);
-
-  useEffect(() => onAuthStateChanged(auth, setUser), []);
+  const [tab, setTab] = useState<TabId>('today');
 
   return (
-    <main className="shell">
-      <h1>Meal Planner</h1>
-      <p>Η εφαρμογή στήθηκε. Ακολουθούν είσοδος, πλάνο και λίστα αγορών.</p>
-      <dl>
-        <dt>Firebase project</dt>
-        <dd>{app.options.projectId}</dd>
-        <dt>Σύνδεση χρήστη</dt>
-        <dd>
-          {user === undefined
-            ? 'Έλεγχος…'
-            : user
-              ? `Συνδεδεμένος: ${user.email}`
-              : 'Κανένας χρήστης συνδεδεμένος'}
-        </dd>
-      </dl>
-    </main>
+    <>
+      {tab === 'today' && <Today />}
+      {tab === 'list' && <ShoppingList />}
+      {tab !== 'today' && tab !== 'list' && (
+        <Screen>
+          <h1 className="title">Έρχεται σύντομα</h1>
+          <p className="empty">Αυτή η οθόνη χτίζεται στα επόμενα βήματα.</p>
+        </Screen>
+      )}
+      <BottomNav current={tab} onSelect={setTab} />
+    </>
   );
 }
